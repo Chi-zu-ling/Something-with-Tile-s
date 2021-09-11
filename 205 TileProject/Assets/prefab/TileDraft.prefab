@@ -46,13 +46,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Void: {fileID: 21300000, guid: 621847f0e53cfb640ac50d27e48e3362, type: 3}
-  Ocean: {fileID: 0}
-  Grassland: {fileID: 0}
+  Ocean: {fileID: 21300000, guid: 0774a1aaf8f593743a38381bc02c6796, type: 3}
+  Grassland: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
   Mountain: {fileID: 21300000, guid: 4438388e296119040a9c6f25a3430657, type: 3}
-  pixelWidth: 32
-  pixelHeight: 32
+  pixelWidth: 24
+  pixelHeight: 24
   position: {x: 0, y: 0}
   AdjacentTiles: []
+  prevType: 
   type: 0
 --- !u!212 &7889416886181198549
 SpriteRenderer:

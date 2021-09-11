@@ -16,7 +16,7 @@ public class NextTile : MonoBehaviour
 
     public List<Tile> nextTileCluster = new List<Tile>();
 
-    public List<Tile.Type> nextTileType;
+    public List<Tile.Type> nextTileTypeList;
 
     public int width;
     public int height;
@@ -28,75 +28,121 @@ public class NextTile : MonoBehaviour
 
     public void startUp(){
 
-        Debug.Log(NTPanel.transform.position.x);
-        Debug.Log(NTPanel.transform.position.y);
-        //this.transform.position = new Vector3(NTPanel.transform.position.x, NTPanel.transform.position.y, -3);
-
-        Debug.Log(this);
-        Debug.Log(this.GetComponent<BoxCollider2D>());
-
         this.GetComponent<BoxCollider2D>().size = new Vector2(15,15);
-        Debug.Log(this.GetComponent<BoxCollider2D>().size);
+        
+
+        nextTileTypeList.Add(Tile.Type.Grassland);
+        nextTileTypeList.Add(Tile.Type.Grassland);
+        nextTileTypeList.Add(Tile.Type.Grassland);
+        nextTileTypeList.Add(Tile.Type.Mountain);
+        nextTileTypeList.Add(Tile.Type.Mountain);
+        nextTileTypeList.Add(Tile.Type.Ocean);
+        nextTileTypeList.Add(Tile.Type.Ocean);
+
+        while(nextTileTypeList.Count < 16) {
+            populateTypes();
+        }
+
+        //Debug.Log("End of Startup: " + nextTileTypeList.Count);
         nextTile();
     }
 
+
+
+
+
     public void nextTile() {
+
+        Debug.Log(nextTileTypeList.Count);
 
         nextTileCluster.Clear();
 
-        for (int i = nextTileCluster.Count;i > 0;i--) {
-            //NTPanel.Destroy(NTPanel.GetChild(i-1));
-        }
-
-        width = Random.Range(3,6);
-        height = Random.Range(3,6);
-
-        //Debug.Log("W: " + width);
-        //Debug.Log("H: " + height);
+        if (nextTileTypeList.Count <= 0) {
+            manager.NextStage();
+        } 
         
-        for(int y = 0; y < height;y++) {
-            for(int x = 0; x < width;x++) {
+        else {
 
-                int chance = Random.Range(0,(width*height));
-                if(chance > (width*height)/4) {
-                    
-                    Vector2Int position = new Vector2Int(x,y);
-                    
-                    z = (float)-1-(height-y)/10;
-                    //Debug.Log(z);
-                    Tile nextTiles = Instantiate(tiles,new Vector3(x,y,z),tiles.transform.rotation).GetComponent<Tile>();
+            Tile.Type nexttileType;
+            int r = Random.Range(0, nextTileTypeList.Count);
+
+            nexttileType = nextTileTypeList[r];
+
+            width = Random.Range(3,6);
+            height = Random.Range(3,6);
+
+            //Debug.Log("W: " + width);
+            //Debug.Log("H: " + height);
 
 
-                    W = (width%2 == 0) ? 0.5f : 0;
-                    H = (height%2 == 0) ? 0.5f : 0;
+            for (int y = 0;y < height;y++) {
+                for (int x = 0;x < width;x++) {
 
-                    nextTiles.transform.position = 
-                        new Vector3(
-                            (float)(NTPanel.transform.position.x+position.x)-(float)(width/2)+W,
-                            (float)(NTPanel.transform.position.y+position.y)-(float)(height/2)+H,
-                            z);
-                  
-                    Debug.Log(nextTiles.transform.position.z);
 
-                    nextTiles.type = Tile.Type.Mountain;
-                    nextTiles.position = position;
-                    nextTiles.name = x.ToString() + ", " + y.ToString() + " - " + nextTiles.type;
-                    //Debug.Log(nextTiles);
-                    //nextTileCluster.Add(nextTiles);
-                    nextTiles.transform.parent = this.gameObject.transform;
 
-                    nextTiles.updateTile();
-                    nextTileCluster.Add(nextTiles);
+                    int chance = Random.Range(0,(width*height));
+                    if (chance > (width*height)/4) {
+
+                        Vector2Int position = new Vector2Int(x,y);
+
+                        z = (float)-1-(height-y)/10;
+                        //Debug.Log(z);
+                        Tile nextTiles = Instantiate(tiles,new Vector3(x,y,z),tiles.transform.rotation).GetComponent<Tile>();
+
+
+                        W = (width%2 == 0) ? 0.5f : 0;
+                        H = (height%2 == 0) ? 0.5f : 0;
+
+                        nextTiles.transform.position =
+                            new Vector3(
+                                (float)(NTPanel.transform.position.x+position.x)-(float)(width/2)+W,
+                                (float)(NTPanel.transform.position.y+position.y)-(float)(height/2)+H,
+                                z);
+
+                        //Debug.Log(nextTiles.transform.position.z);
+
+                        nextTiles.type = nexttileType;
+                        nextTiles.position = position;
+                        nextTiles.name = x.ToString() + ", " + y.ToString() + " - " + nextTiles.type;
+                        //Debug.Log(nextTiles);
+                        //nextTileCluster.Add(nextTiles);
+                        nextTiles.transform.parent = this.gameObject.transform;
+
+                        nextTiles.updateTile();
+                        nextTileCluster.Add(nextTiles);
+                    }
                 }
             }
-        }
 
-        if(nextTileCluster.Count < 8) { redoCluster(); }
-        isDraggable = false;
 
-        overSizeCheck();
+
+            if (nextTileCluster.Count < 8) { redoCluster(); } else {
+                overSizeCheck();
+                nextTileTypeList.RemoveAt(r);
+            }
+
+            isDraggable = false;
+        } 
     }
 
+
+
+
+
+    public void populateTypes() {
+        int r = Random.Range(0,3);
+        if (r == 0) {
+            nextTileTypeList.Add(Tile.Type.Ocean);
+        } else if (r == 1) {
+            nextTileTypeList.Add(Tile.Type.Mountain);
+        } else
+            nextTileTypeList.Add(Tile.Type.Grassland);
+    }
+
+
+
+
+    //neeeeeeeeeds improvement as it is still somewhat buggy with certain Tiles
     public void overSizeCheck() { 
         Tile widthCheck = null;
         Tile heightCheck = null;
@@ -151,6 +197,10 @@ public class NextTile : MonoBehaviour
     
     }
 
+
+
+
+
     public void clearCluster() {
 
         foreach (Transform child in transform) {
@@ -161,7 +211,12 @@ public class NextTile : MonoBehaviour
         }
     }
 
+
+
+
+
     public void redoCluster() {
+        Debug.Log("redoing Cluster");
 
         foreach (Transform child in transform) {
             if (child != transform) {
@@ -172,6 +227,10 @@ public class NextTile : MonoBehaviour
 
         nextTile();
     }
+
+
+
+
 
     public void reset() {
         Debug.Log("twas a Null in the Code");
@@ -184,10 +243,6 @@ public class NextTile : MonoBehaviour
         for (int i = 0;i < nextTileCluster.Count;i++) {
             nextTileCluster[i].GetComponent<BoxCollider2D>().enabled = true;
         }
-    }
-
-    private void Update() {
-        
     }
 
 }

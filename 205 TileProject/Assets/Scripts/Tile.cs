@@ -32,7 +32,8 @@ public class Tile : MonoBehaviour
         Void,
         Ocean,
         Grassland,
-        Mountain
+        Mountain,
+        OreVein
     }
 
     public Type type;
@@ -65,11 +66,13 @@ public class Tile : MonoBehaviour
                 break;
 
             case Type.Ocean:
-
+                this.GetComponent<SpriteRenderer>().sprite = Ocean;
                 break;
+
             case Type.Grassland:
-
+                this.GetComponent<SpriteRenderer>().sprite = Grassland;
                 break;
+
             case Type.Mountain:
                 this.GetComponent<SpriteRenderer>().sprite = Mountain;
                 break;

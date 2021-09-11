@@ -12,6 +12,7 @@ public class Manager : MonoBehaviour
 
     public int points = 0;
     int round = 0;
+    int stage = 1;
 
     public GameObject hoverTargetParent;
 
@@ -24,6 +25,7 @@ public class Manager : MonoBehaviour
             grid.grid[i].updateTile();
         }
 
+        Debug.Log("Calling Startup");
         nextTile.startUp();
     }
 
@@ -45,6 +47,46 @@ public class Manager : MonoBehaviour
         nextTile.nextTile();
         round++;
         //Debug.Log(round);
+    }
+
+    public void NextStage() {
+        stage++;
+
+        if (stage == 2) {
+            Debug.Log("Start Stage 2");
+
+            int Mountain = 0;
+            int Ocean = 0;
+            int GrassLand = 0;
+
+            for(int i = 0; i < grid.grid.Count;i++) {
+                if(grid.grid[i].type == Tile.Type.Mountain) {
+                    Mountain++;
+                }
+                else if (grid.grid[i].type == Tile.Type.Ocean) {
+                    Ocean++;
+                }
+                else if (grid.grid[i].type == Tile.Type.Grassland) {
+                    GrassLand++;
+                }
+            }
+
+            for(int i = 0; i < (Mountain / 5);i++) {
+                nextTile.nextTileTypeList.Add(Tile.Type.OreVein);
+            }
+
+            for(int i = 0;i < nextTile.nextTileTypeList.Count;i++) {
+                Debug.Log(nextTile.nextTileTypeList[i]);
+            }
+
+        } 
+        
+        else if (stage == 3) {
+
+        } 
+        
+        else Debug.Log("End of Game");
+
     }
 
 
