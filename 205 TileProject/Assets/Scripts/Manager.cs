@@ -8,6 +8,7 @@ public class Manager : MonoBehaviour
 
     public Grid grid;
     public NextTile nextTile;
+    public PreShowTile preShowTile;
     public Tile tile;
 
     public int points = 0;
@@ -26,7 +27,8 @@ public class Manager : MonoBehaviour
         }
 
         Debug.Log("Calling Startup");
-        nextTile.startUp();
+        Debug.Log(nextTile);
+        preShowTile.startUp();
     }
 
     // Update is called once per frame
@@ -44,7 +46,7 @@ public class Manager : MonoBehaviour
 
         grid.adjacentTiles();
 
-        nextTile.nextTile();
+        preShowTile.nextTile();
         round++;
         //Debug.Log(round);
     }
@@ -127,7 +129,7 @@ public class Manager : MonoBehaviour
             }
             nextTile.GetComponent<BoxCollider2D>().enabled = false;
           
-            nextTile.transform.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,Camera.main.ScreenToWorldPoint(Input.mousePosition).y,-1);
+            nextTile.transform.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,Camera.main.ScreenToWorldPoint(Input.mousePosition).y-0.5f,-1);
         }
     }
 
@@ -137,8 +139,8 @@ public class Manager : MonoBehaviour
         if (nextTile.isDraggable) {
 
             //when uneven +1 else 0.5f (to get the right grid.Tile)
-            float W = (nextTile.W == 0.5) ? 1 : 0.5f;
-            float H = (nextTile.H == 0.5) ? 1 : 0.5f;
+            float W = (nextTile.width%2 != 0) ? 0.5f : 1;
+            float H = (nextTile.height%2 != 0) ? 0.5f : 1;
 
             float mouseX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x+W;
             float mouseY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y+H;
@@ -146,6 +148,9 @@ public class Manager : MonoBehaviour
             //get the Tile the Mouse is Hovering over, if there is one
             Tile hoverGridTile;
             hoverGridTile = grid.grid.FirstOrDefault(x => x.position.x == (int)(mouseX) && x.position.y == (int)(mouseY));
+            Debug.Log("MouseX: "+mouseX);
+            Debug.Log("MouseY: "+mouseY);
+            Debug.Log("HovergridTile: " + hoverGridTile);
             //hoverGridTile = grid.grid.FirstOrDefault(x => x.position.x == (int)(mouseX) && x.position.y == (int)(mouseY));
 
             //add nullchecks inside FirstorDefault Code
