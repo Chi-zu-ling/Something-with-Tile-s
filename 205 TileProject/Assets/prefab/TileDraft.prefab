@@ -51,6 +51,7 @@ MonoBehaviour:
   Mountain: {fileID: 21300000, guid: 4438388e296119040a9c6f25a3430657, type: 3}
   pixelWidth: 24
   pixelHeight: 24
+  point: 0
   position: {x: 0, y: 0}
   AdjacentTiles: []
   prevType: 

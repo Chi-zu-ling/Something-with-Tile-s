@@ -19,7 +19,7 @@ public class Tile : MonoBehaviour
     float width;
     float height;
 
-    int point;
+    public int point;
 
 
     //public string Type;
@@ -149,10 +149,10 @@ public class Tile : MonoBehaviour
         manager.mouseHover(this);
     }
 
+
     private void OnMouseDown() {
         manager.MouseTarget();
     }
-
 
     private void OnMouseDrag() {
         manager.mouseDrag();
@@ -160,6 +160,11 @@ public class Tile : MonoBehaviour
 
     private void OnMouseUp() {
         manager.targetDrop();
+    }
+
+
+    private void OnMouseExit() {
+        manager.hoverInfoPanel.HoverPanel.SetActive(false);   
     }
     #endregion
 }

@@ -10,6 +10,7 @@ public class Manager : MonoBehaviour
     public NextTile nextTile;
     public PreShowTile preShowTile;
     public Tile tile;
+    public HoverInfoPanel hoverInfoPanel;
 
     public int points = 0;
     int round = 0;
@@ -35,6 +36,7 @@ public class Manager : MonoBehaviour
     void Update()
     {
         //Debug.Log(hoverTargetParent);
+
     }
 
     public void Round() {
@@ -99,6 +101,7 @@ public class Manager : MonoBehaviour
     */
 
     #region Hovers
+
     public void mouseHover(Tile t) {
 
         // if nexttile is currently not picked up, if hovering over nextTile, set it as parent
@@ -107,6 +110,10 @@ public class Manager : MonoBehaviour
             if (t.transform.parent.gameObject.name == "NextTile") {
                 hoverTargetParent = t.transform.parent.gameObject;
             } else hoverTargetParent = null;
+        }
+
+        if (!nextTile.isDraggable && t.transform.parent.gameObject.name == "Grid") {
+          hoverInfoPanel.showInfoTile(t);
         }
     }
 
