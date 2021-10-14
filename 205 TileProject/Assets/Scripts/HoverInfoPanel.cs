@@ -28,6 +28,10 @@ public class HoverInfoPanel : MonoBehaviour
                 Camera.main.ScreenToWorldPoint(Input.mousePosition).x+1,
                 Camera.main.ScreenToWorldPoint(Input.mousePosition).y-0.4f);
 
+        //HoverPanel.transform.localPosition = new Vector3(HoverPanel.transform.localPosition.x,HoverPanel.transform.localPosition.y,1);
+
+        Debug.Log("hover "+HoverPanel.transform.localPosition.z);
+
         Terrain.GetComponent<TextMeshProUGUI>().text = t.type.ToString();
         Points.GetComponent<TextMeshProUGUI>().text = t.point.ToString();
        

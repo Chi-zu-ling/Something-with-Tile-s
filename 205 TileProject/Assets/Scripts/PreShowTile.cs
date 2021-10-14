@@ -112,11 +112,11 @@ public class PreShowTile:MonoBehaviour {
                     W = (width%2 == 0) ? 0.5f : 0;
                     H = (height%2 == 0) ? 0.5f : 0;
 
-                    nextTiles.transform.position =
-                        new Vector3(
-                            (float)(NTPanel.transform.position.x+position.x)-(float)(width/2)+W,
-                            (float)(NTPanel.transform.position.y+position.y)-(float)(height/2)+H,
-                            z);
+                    nextTiles.GetComponent<SpriteRenderer>().sortingOrder = -1;
+
+                    /*nextTiles.GetComponent<RectTransform>().localPosition = new Vector3(
+                        nextTiles.GetComponent<RectTransform>().localPosition.x,
+                        nextTiles.GetComponent<RectTransform>().localPosition.y,0);*/
 
                     //Debug.Log(nextTiles.transform.position.z);
 
@@ -208,6 +208,8 @@ public class PreShowTile:MonoBehaviour {
 
             nextTileCluster[i].transform.position = new Vector3(x,y += 0.5f,z -= 1.5f);
             NextTile.nextTileCluster.Add(nextTileCluster[i]);
+
+            nextTileCluster[i].GetComponent<SpriteRenderer>().sortingOrder = 0;
 
             nextTileCluster[i].transform.parent = NextTile.gameObject.transform;
         }

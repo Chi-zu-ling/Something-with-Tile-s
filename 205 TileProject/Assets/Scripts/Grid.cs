@@ -18,7 +18,9 @@ public class Grid : MonoBehaviour
 
     // Start is called before the first frame update
     public void startUp(){
-        
+
+        //this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,0);
+
         spawnGrid();
         adjacentTiles();
         centerCamera();

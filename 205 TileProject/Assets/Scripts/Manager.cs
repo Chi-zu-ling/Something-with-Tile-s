@@ -35,7 +35,6 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(hoverTargetParent);
 
     }
 
@@ -135,8 +134,15 @@ public class Manager : MonoBehaviour
                 nextTile.nextTileCluster[i].GetComponent<BoxCollider2D>().enabled = false;
             }
             nextTile.GetComponent<BoxCollider2D>().enabled = false;
-          
-            nextTile.transform.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,Camera.main.ScreenToWorldPoint(Input.mousePosition).y-0.5f,-1);
+            
+            nextTile.transform.position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,Camera.main.ScreenToWorldPoint(Input.mousePosition).y-0.5f);
+
+            nextTile.GetComponent<RectTransform>().localPosition = new Vector3(
+                nextTile.GetComponent<RectTransform>().localPosition.x,
+                nextTile.GetComponent<RectTransform>().localPosition.y , 0);
+
+            //Debug.Log(nextTile.transform.position);
+            //Debug.Log(Camera.main.ScreenToViewportPoint(Input.mousePosition));
         }
     }
 
@@ -155,10 +161,11 @@ public class Manager : MonoBehaviour
             //get the Tile the Mouse is Hovering over, if there is one
             Tile hoverGridTile;
             hoverGridTile = grid.grid.FirstOrDefault(x => x.position.x == (int)(mouseX) && x.position.y == (int)(mouseY));
-            Debug.Log("MouseX: "+mouseX);
+
+            /*Debug.Log("MouseX: "+mouseX);
             Debug.Log("MouseY: "+mouseY);
             Debug.Log("HovergridTile: " + hoverGridTile);
-            //hoverGridTile = grid.grid.FirstOrDefault(x => x.position.x == (int)(mouseX) && x.position.y == (int)(mouseY));
+            //hoverGridTile = grid.grid.FirstOrDefault(x => x.position.x == (int)(mouseX) && x.position.y == (int)(mouseY));*/
 
             //add nullchecks inside FirstorDefault Code
             Tile targetTile;
