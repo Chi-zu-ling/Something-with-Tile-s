@@ -79,6 +79,7 @@ public class PreShowTile:MonoBehaviour {
 
             }
         }
+        NextTile.Description(NextTile.nextTileCluster[0]);
     }
 
 
@@ -213,7 +214,7 @@ public class PreShowTile:MonoBehaviour {
 
             nextTileCluster[i].transform.parent = NextTile.gameObject.transform;
         }
-
+       
         NextTile.width = width;
         NextTile.height = height;
 

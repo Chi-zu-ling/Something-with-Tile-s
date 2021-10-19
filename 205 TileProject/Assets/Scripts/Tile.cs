@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
+using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
@@ -21,8 +23,6 @@ public class Tile : MonoBehaviour
 
     public int point;
 
-
-    //public string Type;
     public Vector2Int position;
     public List<Tile> AdjacentTiles;
 
@@ -140,6 +140,24 @@ public class Tile : MonoBehaviour
                 }
 
                 break;
+        }
+    }
+
+
+    public void Description() {
+        switch (type) {
+            case Type.Void:
+                break;
+
+            case Type.Ocean:
+                break;
+
+            case Type.Grassland:
+                break;
+
+            case Type.Mountain:
+                break;
+
         }
     }
 

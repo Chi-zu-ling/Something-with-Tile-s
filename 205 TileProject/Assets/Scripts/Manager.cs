@@ -48,6 +48,7 @@ public class Manager : MonoBehaviour
         grid.adjacentTiles();
 
         preShowTile.nextTile();
+        //nextTile.Description(nextTile.nextTileCluster[0]);
         round++;
         //Debug.Log(round);
     }

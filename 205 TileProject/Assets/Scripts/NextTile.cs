@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class NextTile : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class NextTile : MonoBehaviour
 
     public float W;
     public float H;
+
+    [SerializeField] TextMeshProUGUI name;
+    [SerializeField] TextMeshProUGUI details;
 
     public void startUp(){
 
@@ -71,4 +75,30 @@ public class NextTile : MonoBehaviour
             nextTileCluster[i].GetComponent<BoxCollider2D>().enabled = true;
         }
     }
+
+    public void Description(Tile t) {
+        Debug.Log("Inside Descriptions");
+        Debug.Log(name);
+        name.text = t.type.ToString();
+
+        switch (t.type) {
+            case Tile.Type.Void:
+                details.text = " ... ";
+                break;
+
+            case Tile.Type.Ocean:
+                details.text = " A big Area of Water, can be placed on Void and any Tier 1 Tile";
+                break;
+
+            case Tile.Type.Grassland:
+                details.text = " A wide Area of greenery awaiting to develop, can be placed on Void and any Tier 1 Tile";
+                break;
+
+            case Tile.Type.Mountain:
+                details.text = " A chunk of Rock potentially holding valuable minerals, can be placed on Void and any Tier 1 Tile";
+                break;
+
+        }
+    }
+
 }
