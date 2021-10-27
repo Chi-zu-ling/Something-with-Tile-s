@@ -46,9 +46,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Void: {fileID: 21300000, guid: 621847f0e53cfb640ac50d27e48e3362, type: 3}
-  Ocean: {fileID: 21300000, guid: 0774a1aaf8f593743a38381bc02c6796, type: 3}
-  Grassland: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
-  Mountain: {fileID: 21300000, guid: 4438388e296119040a9c6f25a3430657, type: 3}
+  Ocean: {fileID: 21300000, guid: 03ea0f8a7e5c6c140891fe0ae743a2ba, type: 3}
+  Grassland: {fileID: 21300000, guid: 60a73a34689899b4c9c5382d0e8091f4, type: 3}
+  Mountain: {fileID: 21300000, guid: 08bcfe0b166e9f644b3c5386a639ef75, type: 3}
+  Beach: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
+  OreVein: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Meadow: {fileID: 21300000, guid: 91151a0fcb7f45242821e138527350dd, type: 3}
+  River: {fileID: 21300000, guid: 03ea0f8a7e5c6c140891fe0ae743a2ba, type: 3}
+  Forest: {fileID: 21300000, guid: cf64e0d6280130c49829c5bf082cfb77, type: 3}
+  Marshland: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Village: {fileID: 21300000, guid: 1e58e8627f233f6418df06adf81b61ce, type: 3}
+  LumberHouse: {fileID: 0}
+  HunterHut: {fileID: 0}
+  Farm: {fileID: 0}
+  Forge: {fileID: 0}
+  Mine: {fileID: 0}
+  FisherHut: {fileID: 0}
+  Trader: {fileID: 0}
   pixelWidth: 24
   pixelHeight: 24
   point: 0
@@ -56,8 +70,6 @@ MonoBehaviour:
   AdjacentTiles: []
   prevType: 
   type: 0
-  Name: {fileID: 0}
-  Details: {fileID: 0}
 --- !u!212 &5153383931911907874
 SpriteRenderer:
   m_ObjectHideFlags: 0

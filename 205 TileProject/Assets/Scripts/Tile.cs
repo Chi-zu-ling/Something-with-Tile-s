@@ -15,6 +15,22 @@ public class Tile : MonoBehaviour
     [SerializeField] Sprite Ocean;
     [SerializeField] Sprite Grassland;
     [SerializeField] Sprite Mountain;
+    [SerializeField] Sprite Beach;
+
+    [SerializeField] Sprite OreVein;
+    [SerializeField] Sprite Meadow;
+    [SerializeField] Sprite River;
+    [SerializeField] Sprite Forest;
+    [SerializeField] Sprite Marshland;
+
+    [SerializeField] Sprite Village;
+    [SerializeField] Sprite LumberHouse;
+    [SerializeField] Sprite HunterHut;
+    [SerializeField] Sprite Farm;
+    [SerializeField] Sprite Forge;
+    [SerializeField] Sprite Mine;
+    [SerializeField] Sprite FisherHut;
+    [SerializeField] Sprite Trader;
 
     public int pixelWidth = 1;
     public int pixelHeight = 1;
@@ -33,7 +49,24 @@ public class Tile : MonoBehaviour
         Ocean,
         Grassland,
         Mountain,
-        OreVein
+
+        Beach,
+
+        OreVein,
+        Forest,
+        Meadow,
+        River,
+
+        MarshLand,
+
+        Village,
+        LumberHouse,
+        HunterHut,
+        Farm,
+        Forge,
+        Mine,
+        FisherHut,
+        Trader
     }
 
     public Type type;
@@ -48,7 +81,33 @@ public class Tile : MonoBehaviour
         float height = pixelHeight;
     }
 
+
+
     public void updateTile() {
+
+        //Beach-check
+        if(this.type == Tile.Type.Beach) {
+            bool watercheck = false;
+
+            for (int i = 0;i < this.AdjacentTiles.Count;i++) {
+                if (this.AdjacentTiles[i].type == Tile.Type.Ocean) {
+                    watercheck = true;
+                }
+            }
+
+            if(watercheck == false) {
+                this.type = Tile.Type.Grassland;
+            }
+        }
+
+        if (this.type == Tile.Type.Grassland) {
+            for (int i = 0;i < this.AdjacentTiles.Count;i++) {
+                if (this.AdjacentTiles[i].type == Tile.Type.Ocean) {
+                    this.type = Tile.Type.Beach;
+                }
+            }
+        }
+
         this.name = this.position + ", " +this.type;
 
         //check if AdjacentTiles should change this tile, if yes set Type
@@ -59,7 +118,17 @@ public class Tile : MonoBehaviour
         //in global and add the sprite to it via the Unity Editor
         //then add new Tile type in: enum Type{}
         //Lastly, create new case below.
-        switch (type){
+        SetSprites();
+        
+        pointRules(this);
+
+    }
+
+
+
+
+    public void SetSprites() {
+        switch (type) {
 
             case Type.Void:
                 this.GetComponent<SpriteRenderer>().sprite = Void;
@@ -77,16 +146,38 @@ public class Tile : MonoBehaviour
                 this.GetComponent<SpriteRenderer>().sprite = Mountain;
                 break;
 
-            
+            case Type.Beach:
+                this.GetComponent<SpriteRenderer>().sprite = Beach;
+                break;
+
+
+
+            case Type.Meadow:
+                this.GetComponent<SpriteRenderer>().sprite = Meadow;
+                break;
+
+            case Type.Forest:
+                this.GetComponent<SpriteRenderer>().sprite = Forest;
+                break;
+
+            case Type.OreVein:
+                this.GetComponent<SpriteRenderer>().sprite = OreVein;
+                break;
+
+            case Type.River:
+                this.GetComponent<SpriteRenderer>().sprite = River;
+                break;
+
+            /*case Type.MarshLand:
+                this.GetComponent<SpriteRenderer>().sprite = ;
+                break;*/
+
 
             default: {
                     Debug.Log("");
-            break;
-            }
+                    break;
+                }
         }
-
-        pointRules();
-
     }
 
     public bool placementRules(Tile targetTile, Tile nextTile) {
@@ -95,24 +186,36 @@ public class Tile : MonoBehaviour
 
         switch (nextTile.type) {
             case Type.Void:
-
                 return true;
                 
 
             case Type.Ocean:
-
                 return true;
                 
 
             case Type.Grassland:
-
                 return true;
                 
 
             case Type.Mountain:
-
                 return true;
-                
+
+
+                //Tier 2
+            case Type.Meadow:
+                if (targetTile.type == Type.Grassland) {
+                    return true;
+                } else return false;
+
+            case Type.Forest:
+                if (targetTile.type == Type.Grassland) {
+                    return true;
+                } else return false;
+
+            case Type.OreVein:
+                if (targetTile.type == Type.Mountain) {
+                    return true;
+                } else return false;
 
         }
 
@@ -120,44 +223,81 @@ public class Tile : MonoBehaviour
     }
 
     //Callculation of Points for this tile
-    public void pointRules() {
+    public void pointRules(Tile tile) {
+        
         switch (type) {
             case Type.Void:
                 break;
 
             case Type.Ocean:
+                point = 0;
+                for (int i = 0;i < tile.AdjacentTiles.Count;i++) {
+                    if (tile.AdjacentTiles[i].type == Tile.Type.Ocean) {
+                        point += 1;
+                    }
+                    else if (tile.AdjacentTiles[i].type == Tile.Type.Beach) {
+                        point += 3;
+                    }
+                }
                 break;
 
             case Type.Grassland:
+                point = 1;
                 break;
 
             case Type.Mountain:
+                point = 0;
+                int M = 0;
 
-                for(int i=0;i < AdjacentTiles.Count;i++) {
-                    if(AdjacentTiles[i].type == Tile.Type.Mountain) {
-                        manager.points += 2;
+                for(int i=0;i < tile.AdjacentTiles.Count;i++) {
+                    if (tile.AdjacentTiles[i].type == Tile.Type.Mountain) {
+                        M ++;
+                    }
+                }
+
+                point = M;
+
+                break;
+
+            case Type.Beach:
+                    point = 5;
+                break;
+
+            
+
+
+    //Tier 2
+            case Type.OreVein:
+                point = 0;
+                int OV = 0;
+
+                //5 times the points of the mointain tile placed on - 4 for each mountain adjacent
+                for (int i = 0;i < tile.AdjacentTiles.Count;i++) {
+                    if (tile.AdjacentTiles[i].type == Tile.Type.Mountain) {
+                        point +=1;
+                    }else if(tile.AdjacentTiles[i].type == Tile.Type.OreVein) {
+                        point +=1;
+                        OV +=1;
+                    }
+                }
+
+                point = (point*5 - (OV*4));
+                break;
+
+            case Type.Forest:
+                point = 0;
+
+                for (int i = 0;i < tile.AdjacentTiles.Count;i++) {
+                    if (tile.AdjacentTiles[i].type == Tile.Type.Mountain ||
+                        tile.AdjacentTiles[i].type == Tile.Type.OreVein) {
+                        point += 3;
+                    }
+                    else if(tile.AdjacentTiles[i].type == Tile.Type.Forest) {
+                        point +=2;
                     }
                 }
 
                 break;
-        }
-    }
-
-
-    public void Description() {
-        switch (type) {
-            case Type.Void:
-                break;
-
-            case Type.Ocean:
-                break;
-
-            case Type.Grassland:
-                break;
-
-            case Type.Mountain:
-                break;
-
         }
     }
 
@@ -182,7 +322,7 @@ public class Tile : MonoBehaviour
 
 
     private void OnMouseExit() {
-        manager.hoverInfoPanel.HoverPanel.SetActive(false);   
+        manager.hoverInfoPanel.HoverPanel.SetActive(false);
     }
     #endregion
 }

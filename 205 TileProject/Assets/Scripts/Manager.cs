@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 
 public class Manager : MonoBehaviour
 {
@@ -14,9 +15,11 @@ public class Manager : MonoBehaviour
 
     public int points = 0;
     int round = 0;
-    int stage = 1;
+    public int stage = 1;
 
     public GameObject hoverTargetParent;
+
+    [SerializeField] TextMeshProUGUI pointDisplay;
 
     // Start is called before the first frame update
     void Start()
@@ -27,31 +30,27 @@ public class Manager : MonoBehaviour
             grid.grid[i].updateTile();
         }
 
-        Debug.Log("Calling Startup");
-        Debug.Log(nextTile);
         preShowTile.startUp();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
 
     public void Round() {
 
         nextTile.clearCluster();
 
         for(int i=0; i < grid.grid.Count;i++) {
-            grid.grid[i].updateTile();}
+            grid.grid[i].updateTile();
+            //tile.pointRules(grid.grid[i]);
+        }
 
         grid.adjacentTiles();
 
         preShowTile.nextTile();
-        //nextTile.Description(nextTile.nextTileCluster[0]);
         round++;
-        //Debug.Log(round);
     }
+
+
 
     public void NextStage() {
         stage++;
@@ -75,14 +74,31 @@ public class Manager : MonoBehaviour
                 }
             }
 
-            for(int i = 0; i < (Mountain / 5);i++) {
-                nextTile.nextTileTypeList.Add(Tile.Type.OreVein);
+
+            //Mountain Related
+            for(int i = 0; i < (Mountain / 7);i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.OreVein);
             }
 
-            for(int i = 0;i < nextTile.nextTileTypeList.Count;i++) {
-                Debug.Log(nextTile.nextTileTypeList[i]);
+            //GrassLand Related
+            for (int i = 0;i < (GrassLand / 5);i++) {
+
+                int r = Random.Range(0,3);
+
+                if(r == 1) { preShowTile.nextTileTypeList.Add(Tile.Type.Meadow);}
+                else preShowTile.nextTileTypeList.Add(Tile.Type.Forest);
             }
 
+            //Ocean Related
+            for(int i = 0;i < (Ocean / 5);i++) {
+
+            }
+
+            for (int i = 0;i < preShowTile.nextTileTypeList.Count;i++) {
+                //Debug.Log(preShowTile.nextTileTypeList[i]);
+            }
+
+            Round();
         } 
         
         else if (stage == 3) {
@@ -93,6 +109,32 @@ public class Manager : MonoBehaviour
 
     }
 
+
+
+    public void PointTally() {
+
+        for(int i = 0;i < grid.grid.Count; i++) {
+
+            //tile.pointRules(grid.grid[i]);
+            points += grid.grid[i].point;
+            Debug.Log(points);
+        }
+
+        pointDisplay.text = points.ToString();
+    }
+
+
+
+    public void DeleteTile() {
+        nextTile.nextTileCluster.Clear();
+        Round();
+    }
+
+
+
+    public void SwitchTiles() {
+        preShowTile.Switch();
+    }
 
     /*
      //------------------------------------------------------

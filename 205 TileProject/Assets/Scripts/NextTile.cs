@@ -77,8 +77,6 @@ public class NextTile : MonoBehaviour
     }
 
     public void Description(Tile t) {
-        Debug.Log("Inside Descriptions");
-        Debug.Log(name);
         name.text = t.type.ToString();
 
         switch (t.type) {
@@ -87,16 +85,35 @@ public class NextTile : MonoBehaviour
                 break;
 
             case Tile.Type.Ocean:
-                details.text = " A big Area of Water, can be placed on Void and any Tier 1 Tile";
+                details.text = "A big Area of Water, can be placed on Void and any Tier 1 Tile";
                 break;
 
             case Tile.Type.Grassland:
-                details.text = " A wide Area of greenery awaiting to develop, can be placed on Void and any Tier 1 Tile";
+                details.text = "Greenery waiting to develop, can be placed on Void and any Tier 1 Tile";
                 break;
 
             case Tile.Type.Mountain:
-                details.text = " A chunk of Rock potentially holding valuable minerals, can be placed on Void and any Tier 1 Tile";
+                details.text = "Rockformations potentially holding valuable minerals, can be placed on Void and any Tier 1 Tile";
                 break;
+
+
+            case Tile.Type.Meadow:
+                details.text = "A Patch of Rich soil and diverse Plantlife, can only be placed on Grassland";
+                break;
+
+            case Tile.Type.Forest:
+                details.text = "Underwoods animals love to hide in, can only be placed on Grassland";
+                break;
+
+            case Tile.Type.OreVein:
+                details.text = "A Surfaced Vein of Rich Minerals and Metals, can only be placed on MountainTiles";
+                break;
+
+            case Tile.Type.River:
+                details.text = "";
+                break;
+
+
 
         }
     }

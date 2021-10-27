@@ -54,18 +54,22 @@ public class PreShowTile:MonoBehaviour {
 
     public void nextTile() {
 
-        Debug.Log("NextTile");
+        //Debug.Log("NextTile");
+        //Debug.Log(nextTileTypeList.Count);
 
         if (nextTileTypeList.Count == 0 && nextTileCluster.Count == 0) {
+            manager.PointTally();
             manager.NextStage();
-        } else {
+        } 
+        
+        else {
 
             if (nextTileTypeList.Count > 0) {
-                Random.Range(0,nextTileTypeList.Count);
+                r = Random.Range(0,nextTileTypeList.Count);
                 nexttileType = nextTileTypeList[r];
             }
 
-            addToNextTile();
+            if(nextTileCluster.Count != 0) addToNextTile();
 
             if (nextTileTypeList.Count > 0) {
                 createTiles(nexttileType);
@@ -76,8 +80,8 @@ public class PreShowTile:MonoBehaviour {
                 addToNextTile();
                 clearCluster();
                 nextTile();
-
             }
+
         }
         NextTile.Description(NextTile.nextTileCluster[0]);
     }
@@ -86,14 +90,29 @@ public class PreShowTile:MonoBehaviour {
 
     public void createTiles(Tile.Type nexttileType) {
 
-        Debug.Log("Creating new Tiles");
+        /*Debug.Log("Creating new Tiles");
+        Debug.Log("Manager Stage: " + manager.stage);
 
-        width = Random.Range(3,6);
-        height = Random.Range(3,6);
+        Debug.Log(nexttileType);*/
 
-        //Debug.Log("W: " + width);
-        //Debug.Log("H: " + height);
+        #region ClusterSize
+        int min = 0;
+        int max = 0;
 
+        //general
+        if(manager.stage == 1) { min = 3; max = 6; }
+        else if(manager.stage == 2) { min = 1; max = 3; }
+        else if(manager.stage == 3) { min = 1; max = 2; }
+
+        //type Specifics
+        if(nexttileType == Tile.Type.Forest) {
+            { min = 1; max = 4; }}
+        else if(nexttileType == Tile.Type.River) {
+            { min = 1; max = 2; }}
+        #endregion
+
+        width = Random.Range(min,max);
+        height = Random.Range(min,max);
 
         for (int y = 0;y < height;y++) {
             for (int x = 0;x < width;x++) {
@@ -105,8 +124,7 @@ public class PreShowTile:MonoBehaviour {
 
                     Vector2Int position = new Vector2Int(x,y);
 
-                    z = (float)(height-y)/10;
-                    //Debug.Log(z);
+                    z = y;
                     Tile nextTiles = Instantiate(tiles,new Vector3(x,y,z),tiles.transform.rotation).GetComponent<Tile>();
 
 
@@ -115,17 +133,10 @@ public class PreShowTile:MonoBehaviour {
 
                     nextTiles.GetComponent<SpriteRenderer>().sortingOrder = -1;
 
-                    /*nextTiles.GetComponent<RectTransform>().localPosition = new Vector3(
-                        nextTiles.GetComponent<RectTransform>().localPosition.x,
-                        nextTiles.GetComponent<RectTransform>().localPosition.y,0);*/
-
-                    //Debug.Log(nextTiles.transform.position.z);
-
                     nextTiles.type = nexttileType;
                     nextTiles.position = position;
                     nextTiles.name = x.ToString() + ", " + y.ToString() + " - " + nextTiles.type;
-                    //Debug.Log(nextTiles);
-                    //nextTileCluster.Add(nextTiles);
+
                     nextTiles.transform.parent = this.gameObject.transform;
 
                     nextTiles.updateTile();
@@ -134,8 +145,8 @@ public class PreShowTile:MonoBehaviour {
             }
         }
 
-        if (nextTileCluster.Count < 8) {
-            Debug.Log("Cluster was < 8");
+        if ((nextTileCluster.Count < 8 && manager.stage == 1) || (nextTileCluster.Count == 0)) {
+            //Debug.Log("Cluster was < 8 or 0");
             clearCluster();
             nextTileCluster.Clear();
             createTiles(nexttileType);
@@ -144,62 +155,110 @@ public class PreShowTile:MonoBehaviour {
         }
     }
 
+
+
     public void overSizeCheck() {
-        Tile widthCheck = null;
-        Tile heightCheck = null;
+
+        Tile left = nextTileCluster[0];
+        Tile right = nextTileCluster[0];
+        Tile bottom = nextTileCluster[0];
+        Tile top = nextTileCluster[0];
+
+        for(int i = 0; i < nextTileCluster.Count;i++) {
+
+            if(nextTileCluster[i].position.x < left.position.x) { left = nextTileCluster[i]; }
+            if(nextTileCluster[i].position.x > right.position.x) { right = nextTileCluster[i]; }
+            if(nextTileCluster[i].position.y < left.position.x) { bottom = nextTileCluster[i]; }
+            if(nextTileCluster[i].position.y > left.position.x) { top = nextTileCluster[i]; }
+        }
+
+        #region Debug-null
+        /*Debug.Log(left);
+        Debug.Log(right);
+        Debug.Log(bottom);
+        Debug.Log(top);*/
+        #endregion
+
+        width = (right.position.x)-(left.position.x) + 1;
+        W = (width%2 == 0) ? 0.5f : 0;
+
+        height = (top.position.y) - (bottom.position.y) + 1;
+        H = (height%2 == 0) ? 0.5f : 0;
+
+        #region Debug-size
+        /*Debug.Log(left.position.x + ",-");
+        Debug.Log(right.position.x + ",-");
+        Debug.Log("-,"+bottom.position.y);
+        Debug.Log("-,"+top.position.y);
+
+        Debug.Log("width: " + width);
+        Debug.Log("height: " + height);*/
+        #endregion
 
         for (int i = 0;i < nextTileCluster.Count;i++) {
-            heightCheck = nextTileCluster.FirstOrDefault(x => x.position.y == 0);
-            widthCheck = nextTileCluster.FirstOrDefault(x => x.position.x == 0);
-        }
 
-        if (!widthCheck) {
-            //Debug.Log("there was no 0 x");
-            width = width-1;
-            W = (width%2 == 0) ? 0.5f : 0;
-        }
-        if (!heightCheck) {
-            //Debug.Log("there was no 0 y");
-            height = height-1;
-            H = (height%2 == 0) ? 0.5f : 0;
-        }
-
-        widthCheck = null;
-        heightCheck = null;
-
-        for (int i = 0;i < nextTileCluster.Count;i++) {
-            heightCheck = nextTileCluster.FirstOrDefault(x => x.position.y == height-1);
-            widthCheck = nextTileCluster.FirstOrDefault(x => x.position.x == width-1);
-        }
-        if (!widthCheck) {
-            //Debug.Log("there was no max x");
-            width = width-1;
-            W = (width%2 == 0) ? 0.5f : 0;
-        }
-        if (!heightCheck) {
-            //Debug.Log("there was no max y");
-            height = height-1;
-            H = (height%2 == 0) ? 0.5f : 0;
-        }
-
-        //Debug.Log("Readjusted Sizes: W" + width + ", H" + height);
-        for (int i = 0;i < nextTileCluster.Count;i++) {
-
+            nextTileCluster[i].position.x = nextTileCluster[i].position.x-left.position.x;
+            nextTileCluster[i].position.y = nextTileCluster[i].position.y-bottom.position.y;
 
             int x = nextTileCluster[i].position.x;
             int y = nextTileCluster[i].position.y;
+
+
 
             nextTileCluster[i].transform.position =
                         new Vector3(
                             (float)(NTPanel.transform.position.x+x)-(float)(width/2)+W,
                             (float)(NTPanel.transform.position.y+y)-(float)(height/2)+H,
                             nextTileCluster[i].transform.position.z);
+            //Debug.Log(nextTileCluster[i]);
         }
 
     }
 
+
+
+    public void Switch() {
+        List<Tile> preSwitch = new List<Tile>();
+
+        for(int i = 0; i < NextTile.nextTileCluster.Count;i++) {
+            preSwitch.Add(NextTile.nextTileCluster[i]);
+        }
+
+        addToNextTile();
+
+        for(int i = 0; i < preSwitch.Count;i++) {
+
+            float x = NextTile.nextTileCluster[i].transform.position.x;
+            float y = NextTile.nextTileCluster[i].transform.position.y;
+            float z = NextTile.nextTileCluster[i].transform.position.z;
+
+            NextTile.nextTileCluster[i].transform.position = new Vector3(x,y -= 0.5f,z += 1.5f);
+
+            nextTileCluster.Add(NextTile.nextTileCluster[i]);
+
+            nextTileCluster[i].GetComponent<SpriteRenderer>().sortingOrder = -1;
+
+            NextTile.nextTileCluster[i].transform.parent = this.gameObject.transform;
+
+        }
+
+        for (int i = 0; i < NextTile.nextTileCluster.Count;i++) {
+            for(int o = 0; o < preSwitch.Count;o++) {
+                if(NextTile.nextTileCluster[i] == preSwitch[o]) {
+                    NextTile.nextTileCluster.Remove(NextTile.nextTileCluster[i]);
+                }
+            }
+        }
+
+        overSizeCheck();
+
+        preSwitch.Clear();
+    }
+
+
+
     public void addToNextTile() {
-        Debug.Log("filling up Tiles from below");
+        //Debug.Log("filling up Tiles from below");
 
         for (int i = 0;i < nextTileCluster.Count;i++) {
 
@@ -222,8 +281,9 @@ public class PreShowTile:MonoBehaviour {
     }
 
 
+
     public void populateTypes() {
-        int r = Random.Range(0,3);
+        int r = Random.Range(0,4);
         if (r == 0) {
             nextTileTypeList.Add(Tile.Type.Ocean);
         } else if (r == 1) {
@@ -233,8 +293,9 @@ public class PreShowTile:MonoBehaviour {
     }
 
 
+
     public void clearCluster() {
-        Debug.Log("Clearing Cluster");
+        //Debug.Log("Clearing Cluster");
 
         foreach (Transform child in transform) {
             if (child != transform) {
@@ -246,7 +307,7 @@ public class PreShowTile:MonoBehaviour {
 
 
     public void reset() {
-        Debug.Log("twas a Null in the Code");
+        //Debug.Log("twas a Null in the Code");
 
         isDraggable = false;
         manager.hoverTargetParent = null;

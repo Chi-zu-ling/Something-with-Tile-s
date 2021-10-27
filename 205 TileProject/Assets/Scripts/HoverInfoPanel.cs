@@ -30,7 +30,7 @@ public class HoverInfoPanel : MonoBehaviour
 
         //HoverPanel.transform.localPosition = new Vector3(HoverPanel.transform.localPosition.x,HoverPanel.transform.localPosition.y,1);
 
-        Debug.Log("hover "+HoverPanel.transform.localPosition.z);
+        //Debug.Log("hover "+HoverPanel.transform.localPosition.z);
 
         Terrain.GetComponent<TextMeshProUGUI>().text = t.type.ToString();
         Points.GetComponent<TextMeshProUGUI>().text = t.point.ToString();
