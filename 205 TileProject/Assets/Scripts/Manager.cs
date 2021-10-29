@@ -27,7 +27,7 @@ public class Manager : MonoBehaviour
         grid.startUp();
 
         for (int i = 0;i < grid.grid.Count;i++) {
-            grid.grid[i].updateTile();
+            grid.grid[i].updateTile(stage);
         }
 
         preShowTile.startUp();
@@ -40,7 +40,7 @@ public class Manager : MonoBehaviour
         nextTile.clearCluster();
 
         for(int i=0; i < grid.grid.Count;i++) {
-            grid.grid[i].updateTile();
+            grid.grid[i].updateTile(stage);
             //tile.pointRules(grid.grid[i]);
         }
 
@@ -117,6 +117,8 @@ public class Manager : MonoBehaviour
 
             //tile.pointRules(grid.grid[i]);
             points += grid.grid[i].point;
+            grid.grid[i].prevPoints += grid.grid[i].point;
+            grid.grid[i].point = 0;
             Debug.Log(points);
         }
 
@@ -258,7 +260,7 @@ public class Manager : MonoBehaviour
 
                                 if (nextTile.nextTileCluster[i].position+targetTile.position == grid.grid[o].position) {
                                     grid.grid[o].type = nextTile.nextTileCluster[i].type;
-                                    grid.grid[o].updateTile();}
+                                    grid.grid[o].updateTile(stage);}
                             }
                         }
 
@@ -275,6 +277,29 @@ public class Manager : MonoBehaviour
 
             } else nextTile.reset();
 
+        }
+    }
+
+    public void hoverEnter(Tile t) {
+        if (!nextTile.isDraggable && t.transform.parent.gameObject.name == "Grid") {
+            float x = t.transform.position.x;
+            float y = t.transform.position.y;
+            float z = t.transform.position.z;
+
+            t.transform.position = new Vector3(x,y += 0.2f,z);
+            t.hover = true;
+        }
+    }
+
+    public void hoverExit(Tile t) {
+        if (t.hover) {
+            hoverInfoPanel.HoverPanel.SetActive(false);
+            float x = t.transform.position.x;
+            float y = t.transform.position.y;
+            float z = t.transform.position.z;
+
+            t.transform.position = new Vector3(x,y -= 0.2f,z);
+            t.hover = false;
         }
     }
     #endregion

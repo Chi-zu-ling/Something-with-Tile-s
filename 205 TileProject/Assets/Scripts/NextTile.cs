@@ -31,6 +31,7 @@ public class NextTile : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI name;
     [SerializeField] TextMeshProUGUI details;
+    [SerializeField] TextMeshProUGUI pointDisplay;
 
     public void startUp(){
 
@@ -86,14 +87,17 @@ public class NextTile : MonoBehaviour
 
             case Tile.Type.Ocean:
                 details.text = "A big Area of Water, can be placed on Void and any Tier 1 Tile";
+                pointDisplay.text ="Grants 0 Points. + 1 for each adjacent Ocean, +3 for each adjacent Beach";
                 break;
 
             case Tile.Type.Grassland:
                 details.text = "Greenery waiting to develop, can be placed on Void and any Tier 1 Tile";
+                pointDisplay.text ="Grants 1 Point. no Modifiers";
                 break;
 
             case Tile.Type.Mountain:
                 details.text = "Rockformations potentially holding valuable minerals, can be placed on Void and any Tier 1 Tile";
+                pointDisplay.text ="Grants 0 points. +1 for each adjacent Mountain";
                 break;
 
 
@@ -103,10 +107,12 @@ public class NextTile : MonoBehaviour
 
             case Tile.Type.Forest:
                 details.text = "Underwoods animals love to hide in, can only be placed on Grassland";
+                pointDisplay.text ="Grants 2 points. +3 for each adjacent Mountain or Orevein, +2 For each adjacent Forest";
                 break;
 
             case Tile.Type.OreVein:
                 details.text = "A Surfaced Vein of Rich Minerals and Metals, can only be placed on MountainTiles";
+                pointDisplay.text ="Grants 3 Points. 5* original Points of Tile Placed on, -4 for each adjacent Orevein";
                 break;
 
             case Tile.Type.River:

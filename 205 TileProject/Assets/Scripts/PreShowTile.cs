@@ -139,7 +139,7 @@ public class PreShowTile:MonoBehaviour {
 
                     nextTiles.transform.parent = this.gameObject.transform;
 
-                    nextTiles.updateTile();
+                    nextTiles.updateTile(manager.stage);
                     nextTileCluster.Add(nextTiles);
                 }
             }
