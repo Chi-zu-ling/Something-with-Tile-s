@@ -12,6 +12,7 @@ public class Manager : MonoBehaviour
     public PreShowTile preShowTile;
     public Tile tile;
     public HoverInfoPanel hoverInfoPanel;
+    public TileLibrary tileLibrary;
 
     public int points = 0;
     int round = 0;
@@ -27,7 +28,7 @@ public class Manager : MonoBehaviour
         grid.startUp();
 
         for (int i = 0;i < grid.grid.Count;i++) {
-            grid.grid[i].updateTile(stage);
+            tileLibrary.updateTile(grid.grid[i],stage);
         }
 
         preShowTile.startUp();
@@ -39,10 +40,53 @@ public class Manager : MonoBehaviour
 
         nextTile.clearCluster();
 
+        grid.clearCount();
+
         for(int i=0; i < grid.grid.Count;i++) {
-            grid.grid[i].updateTile(stage);
-            //tile.pointRules(grid.grid[i]);
+            tileLibrary.updateTile(grid.grid[i],stage);
+
+            switch (grid.grid[i].type) {
+
+                //tier 1
+                case Tile.Type.Void:
+                    grid.Void += 1;
+                    break;
+
+                case Tile.Type.Mountain:
+                    grid.mountains += 1;
+                    break;
+
+                case Tile.Type.Ocean:
+                    grid.oceans += 1;
+                    break;
+
+                case Tile.Type.Grassland:
+                    grid.grasslands += 1;
+                    break;
+
+                case Tile.Type.Beach:
+                    grid.beaches += 1;
+                    break;
+
+                //tier 2
+                case Tile.Type.Forest:
+                    grid.forests += 1;
+                    break;
+
+                case Tile.Type.Meadow:
+                    grid.meadows += 1;
+                    break;
+
+                case Tile.Type.OreVein:
+                    grid.oreveins += 1;
+                    break;
+
+                case Tile.Type.River:
+                    grid.rivers += 1;
+                    break;
+            }
         }
+        //grid.Count();
 
         grid.adjacentTiles();
 
@@ -58,30 +102,18 @@ public class Manager : MonoBehaviour
         if (stage == 2) {
             Debug.Log("Start Stage 2");
 
-            int Mountain = 0;
-            int Ocean = 0;
-            int GrassLand = 0;
 
-            for(int i = 0; i < grid.grid.Count;i++) {
-                if(grid.grid[i].type == Tile.Type.Mountain) {
-                    Mountain++;
-                }
-                else if (grid.grid[i].type == Tile.Type.Ocean) {
-                    Ocean++;
-                }
-                else if (grid.grid[i].type == Tile.Type.Grassland) {
-                    GrassLand++;
-                }
+            if(grid.Void == 0) {
+                points += 100;
             }
 
-
             //Mountain Related
-            for(int i = 0; i < (Mountain / 7);i++) {
+            for(int i = 0; i < (grid.mountains / 7);i++) {
                 preShowTile.nextTileTypeList.Add(Tile.Type.OreVein);
             }
 
             //GrassLand Related
-            for (int i = 0;i < (GrassLand / 5);i++) {
+            for (int i = 0;i < (grid.grasslands / 5);i++) {
 
                 int r = Random.Range(0,3);
 
@@ -90,12 +122,8 @@ public class Manager : MonoBehaviour
             }
 
             //Ocean Related
-            for(int i = 0;i < (Ocean / 5);i++) {
-
-            }
-
-            for (int i = 0;i < preShowTile.nextTileTypeList.Count;i++) {
-                //Debug.Log(preShowTile.nextTileTypeList[i]);
+            if(grid.oceans > 0) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.River);
             }
 
             Round();
@@ -119,7 +147,7 @@ public class Manager : MonoBehaviour
             points += grid.grid[i].point;
             grid.grid[i].prevPoints += grid.grid[i].point;
             grid.grid[i].point = 0;
-            Debug.Log(points);
+            //Debug.Log(points);
         }
 
         pointDisplay.text = points.ToString();
@@ -209,8 +237,7 @@ public class Manager : MonoBehaviour
 
             /*Debug.Log("MouseX: "+mouseX);
             Debug.Log("MouseY: "+mouseY);
-            Debug.Log("HovergridTile: " + hoverGridTile);
-            //hoverGridTile = grid.grid.FirstOrDefault(x => x.position.x == (int)(mouseX) && x.position.y == (int)(mouseY));*/
+            Debug.Log("HovergridTile: " + hoverGridTile);*/
 
             //add nullchecks inside FirstorDefault Code
             Tile targetTile;
@@ -240,7 +267,7 @@ public class Manager : MonoBehaviour
                             Debug.Log("one of the Tiles does not exist, Abort");
                             break;}
 
-                        canPlace = nextTile.nextTileCluster[i].placementRules(nullcheckTile,nextTile.nextTileCluster[i]);
+                        canPlace = tileLibrary.placementRules(nullcheckTile,nextTile.nextTileCluster[i]);
 
                         if (!canPlace) {
                             Debug.Log("Cannot place Tile according to TilePlacement Rules");
@@ -260,7 +287,8 @@ public class Manager : MonoBehaviour
 
                                 if (nextTile.nextTileCluster[i].position+targetTile.position == grid.grid[o].position) {
                                     grid.grid[o].type = nextTile.nextTileCluster[i].type;
-                                    grid.grid[o].updateTile(stage);}
+                                    tileLibrary.updateTile(grid.grid[o],stage);
+                                }
                             }
                         }
 
@@ -287,6 +315,8 @@ public class Manager : MonoBehaviour
             float z = t.transform.position.z;
 
             t.transform.position = new Vector3(x,y += 0.2f,z);
+            t.GetComponent<BoxCollider2D>().offset = new Vector2(0,-0.2f);
+            t.GetComponent<BoxCollider2D>().size = new Vector2(1,1.2f);
             t.hover = true;
         }
     }
@@ -299,6 +329,8 @@ public class Manager : MonoBehaviour
             float z = t.transform.position.z;
 
             t.transform.position = new Vector3(x,y -= 0.2f,z);
+            t.GetComponent<BoxCollider2D>().offset = new Vector2(0,0f);
+            t.GetComponent<BoxCollider2D>().size = new Vector2(1,1f);
             t.hover = false;
         }
     }

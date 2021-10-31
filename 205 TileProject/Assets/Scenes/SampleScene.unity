@@ -423,6 +423,15 @@ MonoBehaviour:
   tiles: {fileID: 8218401912273751741, guid: ccd05dbacf79ed04ba74ce20237bbd96, type: 3}
   gridWidth: 12
   gridHeight: 12
+  Void: 0
+  mountains: 0
+  oceans: 0
+  grasslands: 0
+  beaches: 0
+  forests: 0
+  oreveins: 0
+  meadows: 0
+  rivers: 0
   grid: []
 --- !u!114 &102064662
 MonoBehaviour:
@@ -448,7 +457,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &122126954
 GameObject:
@@ -681,7 +690,7 @@ RectTransform:
   - {fileID: 1070964129}
   - {fileID: 2066798686}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -860,7 +869,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.17964067, g: 0.16914383, b: 0.1981132, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -907,6 +916,74 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &608876856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 608876857}
+  - component: {fileID: 608876858}
+  m_Layer: 0
+  m_Name: TileLibrary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &608876857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608876856}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.194442, y: 6.414906, z: -1.1578964}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &608876858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608876856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32bab6f31d0a15e41a99a6586beee96d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tile: {fileID: 8397882851956977663, guid: ccd05dbacf79ed04ba74ce20237bbd96, type: 3}
+  grid: {fileID: 102064661}
+  preShowTile: {fileID: 735406972}
+  Void: {fileID: 21300000, guid: 6b158c6e84d62b246b48ec78339b3711, type: 3}
+  Ocean: {fileID: 21300000, guid: 03ea0f8a7e5c6c140891fe0ae743a2ba, type: 3}
+  Grassland: {fileID: 21300000, guid: 60a73a34689899b4c9c5382d0e8091f4, type: 3}
+  Mountain: {fileID: 21300000, guid: 08bcfe0b166e9f644b3c5386a639ef75, type: 3}
+  Beach: {fileID: 21300000, guid: ab8e24fd26fff3448b21e0b3e828eed5, type: 3}
+  BeachShells: {fileID: 21300000, guid: 993d0fb7d1ac524488eb01f171904962, type: 3}
+  OreVein: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Meadow: {fileID: 21300000, guid: 91151a0fcb7f45242821e138527350dd, type: 3}
+  River: {fileID: 21300000, guid: 0774a1aaf8f593743a38381bc02c6796, type: 3}
+  Forest: {fileID: 21300000, guid: cf64e0d6280130c49829c5bf082cfb77, type: 3}
+  Marshland: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
+  Village: {fileID: 0}
+  LumberHouse: {fileID: 0}
+  HunterHut: {fileID: 0}
+  Farm: {fileID: 0}
+  Forge: {fileID: 0}
+  Mine: {fileID: 0}
+  FisherHut: {fileID: 0}
+  Trader: {fileID: 0}
+  name: {fileID: 1591901399}
+  details: {fileID: 1994027298}
+  pointDisplay: {fileID: 443542656}
 --- !u!1 &669481343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,6 +1173,7 @@ MonoBehaviour:
   NTPanel: {fileID: 2070905564}
   tiles: {fileID: 8218401912273751741, guid: ccd05dbacf79ed04ba74ce20237bbd96, type: 3}
   manager: {fileID: 2086822630}
+  tileLibrary: {fileID: 608876858}
   NextTile: {fileID: 2118424218}
   currentTileCluster: {fileID: 0}
   isDraggable: 0
@@ -1302,7 +1380,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1070964128
 GameObject:
@@ -2552,6 +2630,7 @@ MonoBehaviour:
   preShowTile: {fileID: 735406972}
   tile: {fileID: 0}
   hoverInfoPanel: {fileID: 827952628}
+  tileLibrary: {fileID: 608876858}
   points: 0
   stage: 1
   hoverTargetParent: {fileID: 0}
@@ -2568,7 +2647,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2118424216
 GameObject:
@@ -2633,9 +2712,6 @@ MonoBehaviour:
   z: 0
   W: 0
   H: 0
-  name: {fileID: 1591901399}
-  details: {fileID: 1994027298}
-  pointDisplay: {fileID: 443542656}
 --- !u!61 &2118424219
 BoxCollider2D:
   m_ObjectHideFlags: 0

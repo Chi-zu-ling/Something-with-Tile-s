@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Grid : MonoBehaviour
-{
+public class Grid:MonoBehaviour {
 
     public GameObject tiles;
 
@@ -14,10 +13,21 @@ public class Grid : MonoBehaviour
     float width;
     float height;
 
+    public int Void;
+    public int mountains;
+    public int oceans;
+    public int grasslands;
+    public int beaches;
+
+    public int forests;
+    public int oreveins;
+    public int meadows;
+    public int rivers;
+
     public List<Tile> grid = new List<Tile>();
 
     // Start is called before the first frame update
-    public void startUp(){
+    public void startUp() {
 
         //this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,0);
 
@@ -25,6 +35,27 @@ public class Grid : MonoBehaviour
         adjacentTiles();
         centerCamera();
     }
+
+    public void clearCount() {
+        Void = 0;
+        mountains = 0;
+        oceans = 0;
+        grasslands = 0;
+        beaches = 0;
+
+        forests = 0;
+        oreveins = 0;
+        meadows = 0;
+        rivers = 0;
+    }
+
+    /*public void Count(){
+        Debug.Log("Void: " + Void);
+        Debug.Log("Mountains: " + mountains);
+        Debug.Log("Oceans: " + oceans);
+        Debug.Log("Grassland: " + grasslands);
+
+    }*/
 
 
     //... spawns grid, only call once at start of game

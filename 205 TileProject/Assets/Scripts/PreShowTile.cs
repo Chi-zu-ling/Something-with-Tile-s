@@ -9,6 +9,7 @@ public class PreShowTile:MonoBehaviour {
     public GameObject NTPanel;
     public GameObject tiles;
     public Manager manager;
+    public TileLibrary tileLibrary;
 
     public NextTile NextTile;
 
@@ -54,10 +55,11 @@ public class PreShowTile:MonoBehaviour {
 
     public void nextTile() {
 
-        //Debug.Log("NextTile");
-        //Debug.Log(nextTileTypeList.Count);
+        /* Debug.Log("NextTile");
+         Debug.Log(nextTileTypeList.Count);
+         Debug.Log(NextTile.nextTileCluster.Count);*/
 
-        if (nextTileTypeList.Count == 0 && nextTileCluster.Count == 0) {
+        if (nextTileTypeList.Count == 0 && NextTile.nextTileCluster.Count == 0 && nextTileCluster.Count == 0) {
             manager.PointTally();
             manager.NextStage();
         } 
@@ -83,17 +85,12 @@ public class PreShowTile:MonoBehaviour {
             }
 
         }
-        NextTile.Description(NextTile.nextTileCluster[0]);
+        tileLibrary.Description(NextTile.nextTileCluster[0]);
     }
 
 
 
     public void createTiles(Tile.Type nexttileType) {
-
-        /*Debug.Log("Creating new Tiles");
-        Debug.Log("Manager Stage: " + manager.stage);
-
-        Debug.Log(nexttileType);*/
 
         #region ClusterSize
         int min = 0;
@@ -106,13 +103,20 @@ public class PreShowTile:MonoBehaviour {
 
         //type Specifics
         if(nexttileType == Tile.Type.Forest) {
-            { min = 1; max = 4; }}
-        else if(nexttileType == Tile.Type.River) {
-            { min = 1; max = 2; }}
-        #endregion
+             min = 1; max = 4; }
+
 
         width = Random.Range(min,max);
         height = Random.Range(min,max);
+
+        if (nexttileType == Tile.Type.River) {
+            { width = 1; height = 1;
+                Debug.Log("was a River");
+            }
+        }
+        #endregion
+
+
 
         for (int y = 0;y < height;y++) {
             for (int x = 0;x < width;x++) {
@@ -120,7 +124,7 @@ public class PreShowTile:MonoBehaviour {
 
 
                 int chance = Random.Range(0,(width*height));
-                if (chance > (width*height)/4) {
+                if (chance > (width*height)/4 || nexttileType == Tile.Type.River || manager.stage == 3) {
 
                     Vector2Int position = new Vector2Int(x,y);
 
@@ -139,7 +143,7 @@ public class PreShowTile:MonoBehaviour {
 
                     nextTiles.transform.parent = this.gameObject.transform;
 
-                    nextTiles.updateTile(manager.stage);
+                    manager.tileLibrary.updateTile(nextTiles, manager.stage);
                     nextTileCluster.Add(nextTiles);
                 }
             }
