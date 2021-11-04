@@ -432,6 +432,14 @@ MonoBehaviour:
   oreveins: 0
   meadows: 0
   rivers: 0
+  villages: 0
+  lumbers: 0
+  hunters: 0
+  farmers: 0
+  mines: 0
+  forges: 0
+  fishers: 0
+  traders: 0
   grid: []
 --- !u!114 &102064662
 MonoBehaviour:
@@ -968,19 +976,19 @@ MonoBehaviour:
   Mountain: {fileID: 21300000, guid: 08bcfe0b166e9f644b3c5386a639ef75, type: 3}
   Beach: {fileID: 21300000, guid: ab8e24fd26fff3448b21e0b3e828eed5, type: 3}
   BeachShells: {fileID: 21300000, guid: 993d0fb7d1ac524488eb01f171904962, type: 3}
-  OreVein: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  OreVein: {fileID: 21300000, guid: 2b53f5c9b6accef4fb7538c9bf0fc78b, type: 3}
   Meadow: {fileID: 21300000, guid: 91151a0fcb7f45242821e138527350dd, type: 3}
   River: {fileID: 21300000, guid: 0774a1aaf8f593743a38381bc02c6796, type: 3}
   Forest: {fileID: 21300000, guid: cf64e0d6280130c49829c5bf082cfb77, type: 3}
   Marshland: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
-  Village: {fileID: 0}
-  LumberHouse: {fileID: 0}
-  HunterHut: {fileID: 0}
-  Farm: {fileID: 0}
-  Forge: {fileID: 0}
-  Mine: {fileID: 0}
-  FisherHut: {fileID: 0}
-  Trader: {fileID: 0}
+  Village: {fileID: 21300000, guid: 505561b761c01814ea059ab011493c59, type: 3}
+  Lumber: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Hunter: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Farm: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Forge: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Mine: {fileID: 21300000, guid: 4438388e296119040a9c6f25a3430657, type: 3}
+  Fisher: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
+  Trader: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
   name: {fileID: 1591901399}
   details: {fileID: 1994027298}
   pointDisplay: {fileID: 443542656}

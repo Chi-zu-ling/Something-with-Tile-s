@@ -84,6 +84,39 @@ public class Manager : MonoBehaviour
                 case Tile.Type.River:
                     grid.rivers += 1;
                     break;
+
+
+                case Tile.Type.Village:
+                    grid.villages += 1;
+                    break;
+
+                case Tile.Type.Lumber:
+                    grid.lumbers += 1;
+                    break;
+
+                case Tile.Type.Hunter:
+                    grid.hunters += 1;
+                    break;
+
+                case Tile.Type.Farm:
+                    grid.farmers += 1;
+                    break;
+
+                case Tile.Type.Mine:
+                    grid.mines += 1;
+                    break;
+
+                case Tile.Type.Forge:
+                    grid.forges += 1;
+                    break;
+
+                case Tile.Type.Fisher:
+                    grid.fishers += 1;
+                    break;
+
+                case Tile.Type.Trader:
+                    grid.traders += 1;
+                    break;
             }
         }
         //grid.Count();
@@ -130,7 +163,19 @@ public class Manager : MonoBehaviour
         } 
         
         else if (stage == 3) {
+            Debug.Log("Stage 3 Initiated");
 
+            preShowTile.nextTileTypeList.Add(Tile.Type.Village);
+
+            for (int i = 0;i < (grid.forests / 5);i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.Lumber);
+            }
+
+            for (int i = 0;i < (grid.oreveins / 3);i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.Mine);
+            }
+
+            Round();
         } 
         
         else Debug.Log("End of Game");

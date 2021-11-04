@@ -110,10 +110,8 @@ public class PreShowTile:MonoBehaviour {
         height = Random.Range(min,max);
 
         if (nexttileType == Tile.Type.River) {
-            { width = 1; height = 1;
-                Debug.Log("was a River");
-            }
-        }
+            { width = 1; height = 1;}}
+
         #endregion
 
 
@@ -255,6 +253,8 @@ public class PreShowTile:MonoBehaviour {
         }
 
         overSizeCheck();
+
+        tileLibrary.Description(NextTile.nextTileCluster[0]);
 
         preSwitch.Clear();
     }

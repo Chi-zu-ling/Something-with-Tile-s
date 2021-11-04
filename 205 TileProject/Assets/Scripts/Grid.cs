@@ -24,6 +24,15 @@ public class Grid:MonoBehaviour {
     public int meadows;
     public int rivers;
 
+    public int villages;
+    public int lumbers;
+    public int hunters;
+    public int farmers;
+    public int mines;
+    public int forges;
+    public int fishers;
+    public int traders;
+
     public List<Tile> grid = new List<Tile>();
 
     // Start is called before the first frame update
@@ -47,6 +56,15 @@ public class Grid:MonoBehaviour {
         oreveins = 0;
         meadows = 0;
         rivers = 0;
+
+        villages = 0;
+        lumbers = 0;
+        hunters = 0;
+        farmers = 0;
+        mines = 0;
+        forges = 0;
+        fishers = 0;
+        traders = 0;
     }
 
     /*public void Count(){

@@ -52,7 +52,7 @@ MonoBehaviour:
   prevPoints: 0
   tier: 0
   variation: 1
-  flipped: 1
+  flipped: 0
   position: {x: 0, y: 0}
   AdjacentTiles: []
   prevType: 

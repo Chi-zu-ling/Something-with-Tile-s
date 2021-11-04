@@ -48,12 +48,12 @@ public class Tile:MonoBehaviour {
         MarshLand,
 
         Village,
-        LumberHouse,
-        HunterHut,
+        Lumber,
+        Hunter,
         Farm,
         Forge,
         Mine,
-        FisherHut,
+        Fisher,
         Trader
     }
 
