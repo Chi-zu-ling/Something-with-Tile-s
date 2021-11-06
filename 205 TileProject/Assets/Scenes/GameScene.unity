@@ -980,13 +980,13 @@ MonoBehaviour:
   Meadow: {fileID: 21300000, guid: 91151a0fcb7f45242821e138527350dd, type: 3}
   River: {fileID: 21300000, guid: 0774a1aaf8f593743a38381bc02c6796, type: 3}
   Forest: {fileID: 21300000, guid: cf64e0d6280130c49829c5bf082cfb77, type: 3}
-  Marshland: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
+  Marshland: {fileID: 21300000, guid: 51e98a671f37b814185ac4d49e40ef35, type: 3}
   Village: {fileID: 21300000, guid: 505561b761c01814ea059ab011493c59, type: 3}
-  Lumber: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
-  Hunter: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
-  Farm: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
-  Forge: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
-  Mine: {fileID: 21300000, guid: 4438388e296119040a9c6f25a3430657, type: 3}
+  Lumber: {fileID: 21300000, guid: 7c63f627e7f59ac4fb999ac3051909a7, type: 3}
+  Hunter: {fileID: 21300000, guid: 39e40ccc214cfe54390bef629d8525a6, type: 3}
+  Farm: {fileID: 21300000, guid: 412ddae01c997f345b7c8d35f05eb9a9, type: 3}
+  Forge: {fileID: 21300000, guid: 4438388e296119040a9c6f25a3430657, type: 3}
+  Mine: {fileID: 21300000, guid: 424fd09d219b0e644b245fd12a387509, type: 3}
   Fisher: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
   Trader: {fileID: 21300000, guid: 1ab9501a9d13c6945ad667b5c034e31d, type: 3}
   name: {fileID: 1591901399}
