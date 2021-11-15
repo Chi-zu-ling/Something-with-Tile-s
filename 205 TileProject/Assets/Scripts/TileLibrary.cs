@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class TileLibrary : MonoBehaviour
-{
+public class TileLibrary:MonoBehaviour {
 
     [SerializeField] Tile tile;
     [SerializeField] Grid grid;
@@ -44,6 +43,8 @@ public class TileLibrary : MonoBehaviour
     bool lumberVillage = false;
 
     public void updateTile(Tile t,int stage) {
+
+        Debug.Log("Updating Tile");
 
         int r = 0;
         adjRivers = 0;
@@ -86,20 +87,20 @@ public class TileLibrary : MonoBehaviour
 
 
         //marshland Check
-        for(int i = 0; i < t.AdjacentTiles.Count;i++) {
-            if(t.AdjacentTiles[i].type == Tile.Type.River) {
+        for (int i = 0;i < t.AdjacentTiles.Count;i++) {
+            if (t.AdjacentTiles[i].type == Tile.Type.River) {
                 adjRivers++;
             }
         }
 
-        if(adjRivers > 2 && t.type != Tile.Type.MarshLand && t.type != Tile.Type.Void) {
+        if (adjRivers > 2 && t.type != Tile.Type.MarshLand && t.type != Tile.Type.Void) {
             t.type = Tile.Type.MarshLand;
         }
 
 
         //Tier 3 Tile-distribution
 
-        if(grid.mines == 1 && !mineVillage) {
+        if (grid.mines == 1 && !mineVillage) {
             mineVillage= true;
             Debug.Log("added mineVillage");
             preShowTile.nextTileTypeList.Add(Tile.Type.Village);
@@ -116,8 +117,6 @@ public class TileLibrary : MonoBehaviour
         //check if AdjacentTiles should change this tile, if yes set Type
 
         SetSprites(t);
-
-        pointRules(t,stage);
 
     }
 
@@ -148,12 +147,12 @@ public class TileLibrary : MonoBehaviour
 
             case Tile.Type.Beach:
 
-                if(t.variation == 2) {
+                if (t.variation == 2) {
                     t.GetComponent<SpriteRenderer>().sprite = BeachShells;
-                } else {t.GetComponent<SpriteRenderer>().sprite = Beach;}
+                } else { t.GetComponent<SpriteRenderer>().sprite = Beach; }
 
                 if (t.flipped) {
-                    t.GetComponent<SpriteRenderer>().flipX = true;}
+                    t.GetComponent<SpriteRenderer>().flipX = true; }
 
                 t.tier = 1;
 
@@ -239,29 +238,60 @@ public class TileLibrary : MonoBehaviour
 
 
 
+    public void Destribute(int stage){
+        if (stage == 3) {
+            for (int i = 0;preShowTile.Village <= (grid.lumbers + grid.mines)/2;i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.Village);
+                preShowTile.Village++;
+            };
+
+            if (grid.mines > 0) {
+                for (int i = 0;preShowTile.Forge <= (grid.mines)/2;i++) {
+                    preShowTile.nextTileTypeList.Add(Tile.Type.Forge);
+                    preShowTile.Forge++;
+                };
+            }
+
+            if(grid.forges > preShowTile.Trader &&
+            grid.lumbers%2 > preShowTile.Trader &&
+            grid.fishers > preShowTile.Trader &&
+            grid.hunters > preShowTile.Trader &&
+            grid.farmers > preShowTile.Trader) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.Trader);
+                preShowTile.Trader++;
+            }
+
+        }
+
+    }
+     
+
+
     public bool placementRules(Tile targetTile,Tile nextTile) {
         //only gets called by manager.targetDrop()
         //get placementRules for nextTile (the Tile You are Holding), and check if TargetTile fullfills requirements, if yes; return true; 
 
-        #region Tier-1
-        switch (nextTile.type) {
-            case Tile.Type.Void:
-                return true;
+        if (targetTile.type != Tile.Type.MarshLand) {
+
+            #region Tier-1
+            switch (nextTile.type) {
+                case Tile.Type.Void:
+                    return true;
 
 
-            case Tile.Type.Ocean:
-                return true;
+                case Tile.Type.Ocean:
+                    return true;
 
 
-            case Tile.Type.Grassland:
-                return true;
+                case Tile.Type.Grassland:
+                    return true;
 
 
-            case Tile.Type.Mountain:
-                return true;
-        #endregion
+                case Tile.Type.Mountain:
+                    return true;
+                #endregion
 
-        #region Tier-2
+            #region Tier-2
             case Tile.Type.Meadow:
                 if (targetTile.type == Tile.Type.Grassland) {
                     return true;
@@ -335,44 +365,42 @@ public class TileLibrary : MonoBehaviour
             #endregion
 
 
-        //Tier 3
-        #region Village
+            //Tier 3
+            #region Village
             case Tile.Type.Village:
                 if (!(targetTile.type == Tile.Type.Ocean ||
                     targetTile.type == Tile.Type.River ||
-                    targetTile.type == Tile.Type.MarshLand ||
                     targetTile.type == Tile.Type.Void ||
                     targetTile.tier == 3)) {
 
                     if (grid.villages == 0) {
                         preShowTile.nextTileTypeList.Add(Tile.Type.Lumber);
+                            preShowTile.Lumber++;
                         preShowTile.nextTileTypeList.Add(Tile.Type.Mine);
+                            preShowTile.Lumber++;
 
-                        for (int i = 0;i < (grid.beaches + grid.rivers)/5;i++) {
+                            for (int i = 0;i < (grid.beaches + grid.rivers)/5;i++) {
                             preShowTile.nextTileTypeList.Add(Tile.Type.Fisher);
                         }
 
                         for (int i = 0;i < (grid.meadows)/3;i++) {
-                            preShowTile.nextTileTypeList.Add(Tile.Type.Farm);
-                        }
+                            preShowTile.nextTileTypeList.Add(Tile.Type.Farm);}
 
                         for (int i = 0;i<3;i++) {
-                            preShowTile.nextTileTypeList.Add(Tile.Type.Hunter);
-                        }
+                            preShowTile.nextTileTypeList.Add(Tile.Type.Hunter);}
                     }
 
                     return true;
                 } else return false;
             #endregion
 
-        #region Lumber
+            #region Lumber
             case Tile.Type.Lumber:
 
                 int adjForest = 0;
 
                 if (!(targetTile.type == Tile.Type.Ocean ||
                     targetTile.type == Tile.Type.River ||
-                    targetTile.type == Tile.Type.MarshLand ||
                     targetTile.type == Tile.Type.Void ||
                     targetTile.tier == 3)) {
 
@@ -389,11 +417,10 @@ public class TileLibrary : MonoBehaviour
                 } else return false;
             #endregion
 
-        #region Hunter
+            #region Hunter
             case Tile.Type.Hunter:
                 if (!(targetTile.type == Tile.Type.Ocean ||
                     targetTile.type == Tile.Type.River ||
-                    targetTile.type == Tile.Type.MarshLand ||
                     targetTile.type == Tile.Type.Void ||
                     targetTile.tier == 3)) {
 
@@ -407,7 +434,7 @@ public class TileLibrary : MonoBehaviour
                 } else return false;
             #endregion
 
-        #region Farm
+            #region Farm
             case Tile.Type.Farm:
                 if (targetTile.type == Tile.Type.Meadow ||
                     targetTile.type == Tile.Type.Grassland) {
@@ -417,7 +444,7 @@ public class TileLibrary : MonoBehaviour
                 } else return false;
             #endregion
 
-        #region Mine
+            #region Mine
             case Tile.Type.Mine:
                 if (targetTile.type == Tile.Type.Mountain ||
                     targetTile.type == Tile.Type.OreVein) {
@@ -425,7 +452,7 @@ public class TileLibrary : MonoBehaviour
                 } else return false;
             #endregion
 
-        #region Forge
+            #region Forge
             case Tile.Type.Forge:
                 if (targetTile.type == Tile.Type.Meadow ||
                     targetTile.type == Tile.Type.Grassland ||
@@ -435,7 +462,9 @@ public class TileLibrary : MonoBehaviour
                     targetTile.type == Tile.Type.Beach) {
 
                     for (int i = 0;i < targetTile.AdjacentTiles.Count;i++) {
-                        if (targetTile.AdjacentTiles[i].type == Tile.Type.Mountain) {
+                        if (targetTile.AdjacentTiles[i].type == Tile.Type.Mountain ||
+                                targetTile.AdjacentTiles[i].type == Tile.Type.OreVein ||
+                                targetTile.AdjacentTiles[i].type == Tile.Type.Mine) {
                             return true;
                         }
                     }
@@ -444,49 +473,60 @@ public class TileLibrary : MonoBehaviour
                 } else return false;
             #endregion
 
-        #region Fisher
-            case Tile.Type.Fisher:
+            #region Fisher
+                case Tile.Type.Fisher:
 
-                bool waterlogged = false;
-                bool landed = false;
+                    bool waterlogged = false;
+                    bool landed = false;
 
-                if (targetTile.type == Tile.Type.Meadow ||
-                    targetTile.type == Tile.Type.Grassland ||
-                    targetTile.type == Tile.Type.River||
-                    targetTile.type == Tile.Type.Ocean ||
-                    targetTile.type == Tile.Type.Forest ||
-                    targetTile.type == Tile.Type.Beach) {
+                    if (targetTile.type == Tile.Type.Meadow ||
+                        targetTile.type == Tile.Type.Grassland ||
+                        targetTile.type == Tile.Type.River||
+                        targetTile.type == Tile.Type.Ocean ||
+                        targetTile.type == Tile.Type.Forest ||
+                        targetTile.type == Tile.Type.Beach) {
 
-                    for (int i = 0;i < targetTile.AdjacentTiles.Count;i++) {
+                        for (int i = 0;i < targetTile.AdjacentTiles.Count;i++) {
 
-                        if(!(targetTile.AdjacentTiles[i].type == Tile.Type.Ocean ||
-                             targetTile.AdjacentTiles[i].type == Tile.Type.River ||
-                             targetTile.AdjacentTiles[i].type == Tile.Type.Void)) {
-                             landed = true;
+                            if (!(targetTile.AdjacentTiles[i].type == Tile.Type.Ocean ||
+                                 targetTile.AdjacentTiles[i].type == Tile.Type.River)) {
+                                landed = true;
+                            }
+
+                            if (targetTile.AdjacentTiles[i].type == Tile.Type.Ocean ||
+                               targetTile.AdjacentTiles[i].type == Tile.Type.River) {
+                                waterlogged = true;
+                            } else if (!(targetTile.AdjacentTiles[i].type == Tile.Type.Ocean ||
+                                 targetTile.AdjacentTiles[i].type == Tile.Type.River ||
+                                 targetTile.AdjacentTiles[i].type == Tile.Type.Void)) {
+                                landed = true;
+                            }
                         }
 
-                        if (targetTile.AdjacentTiles[i].type == Tile.Type.Ocean ||
-                           targetTile.AdjacentTiles[i].type == Tile.Type.River) {
-                            waterlogged = true;
-                        } else if (!(targetTile.AdjacentTiles[i].type == Tile.Type.Ocean ||
-                             targetTile.AdjacentTiles[i].type == Tile.Type.River ||
-                             targetTile.AdjacentTiles[i].type == Tile.Type.Void)) {
-                            landed = true;
+                        if (waterlogged && landed) {
+                            return true;
                         }
+
                     }
+                    return false;
+                #endregion
 
-                    if(waterlogged && landed) {
-                        return true;}
+            #region Trader
+                case Tile.Type.Trader:
 
-                }
+                    if(targetTile.type == Tile.Type.Ocean ||
+                        targetTile.type == Tile.Type.River) {
+                        return true;
+                    }
                 return false;
                 #endregion
-        }
-        
-        return true;
+
+            }
+
+            return true;
+        }return false;
     }
     
-
 
 
     //Callculation of Points for this tile
@@ -585,7 +625,7 @@ public class TileLibrary : MonoBehaviour
                     break;
 
                 case Tile.Type.MarshLand:
-                    t.point = 0;
+                    t.point = 10;
 
                     for (int i = 0;i < t.AdjacentTiles.Count;i++) {
                         t.point +=  t.AdjacentTiles[i].point;
@@ -616,6 +656,8 @@ public class TileLibrary : MonoBehaviour
                     t.point += (grid.fishers*7);
                     t.point += (grid.hunters*12);
                     t.point += (grid.farmers*15);
+
+                    Debug.Log(grid.villages);
 
                     if (grid.villages > 0) {
                         t.point = (t.point / grid.villages);}
@@ -696,7 +738,13 @@ public class TileLibrary : MonoBehaviour
     #region Forge
                 case Tile.Type.Forge:
                     t.point = 25;
-                    Debug.Log("Forge to be calculated");
+
+                    for (int i = 0;i < t.AdjacentTiles.Count;i++) {
+                        if (t.AdjacentTiles[i].type == Tile.Type.Mine) {
+                            t.point += t.AdjacentTiles[i].point/2;
+                        }
+                    }
+
                     break;
                 #endregion
 
@@ -715,8 +763,22 @@ public class TileLibrary : MonoBehaviour
                     }
 
                     break;
-                    #endregion
+                #endregion
 
+    #region Trader
+                case Tile.Type.Trader:
+                    t.point = 5;
+
+                    t.point += (grid.hunters + grid.fishers + grid.farmers) * 2;
+                    t.point += (grid.lumbers) * 3;
+                    t.point += (grid.mines) * 4;
+                    t.point += (grid.forges) * 7;
+
+                    if (grid.traders>0) {
+                        t.point *= grid.traders;}
+
+                break;
+                #endregion
 
             }
         }
@@ -768,6 +830,9 @@ public class TileLibrary : MonoBehaviour
                 break;
             #endregion
 
+
+
+
             #region Tier-2
             case Tile.Type.Meadow:
                 details.text = "A patch of rich soil and diverse plantlife, can only be placed on Grassland";
@@ -792,6 +857,9 @@ public class TileLibrary : MonoBehaviour
                 pointDisplay.text = "Grants a *2 Multiplier to adjacent tiles (stacks), grants a bonus if it ends on a Mountain or Orevein (+50). Dont become too greedy";
                 break;
             #endregion
+
+
+
 
             #region Tier-3
             case Tile.Type.Village:
@@ -820,8 +888,8 @@ public class TileLibrary : MonoBehaviour
                 break;
 
             case Tile.Type.Forge:
-                details.text = "";
-                pointDisplay.text = "";
+                details.text = "Melts the Ore from adjacent Mines and transforms it into usefull Items, can only be placed adjacent to a Mountain and not on Water";
+                pointDisplay.text = "Grants 25 base Points and gains half the poits of any adjacent Mine";
                 break;
 
             case Tile.Type.Fisher:
@@ -830,8 +898,8 @@ public class TileLibrary : MonoBehaviour
                 break;
 
             case Tile.Type.Trader:
-                details.text = "";
-                pointDisplay.text = "";
+                details.text = "Trades Produce for Profits, can only be placed on Ocean or River Tiles";
+                pointDisplay.text = "Grants 5 base Points. +2,+3,+4,+7 for each Food Source, Lumber, Mine, Forge. * Traders on the Map";
                 break;
                 #endregion
         }

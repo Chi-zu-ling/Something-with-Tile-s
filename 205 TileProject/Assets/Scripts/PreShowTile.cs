@@ -34,6 +34,13 @@ public class PreShowTile:MonoBehaviour {
     public float W;
     public float H;
 
+    public int Village;
+    public int Lumber;
+    public int Forge;
+    public int Mine;
+    public int Trader;
+
+
     public void startUp() {
 
         nextTileTypeList.Add(Tile.Type.Grassland);
@@ -61,8 +68,7 @@ public class PreShowTile:MonoBehaviour {
 
         if (nextTileTypeList.Count == 0 && NextTile.nextTileCluster.Count == 0 && nextTileCluster.Count == 0) {
             manager.PointTally();
-            manager.NextStage();
-        } 
+            manager.NextStage();} 
         
         else {
 

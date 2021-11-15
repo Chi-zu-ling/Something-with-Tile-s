@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class Manager : MonoBehaviour
     public int stage = 1;
 
     public GameObject hoverTargetParent;
+
+    public GameObject OptionsMenu;
 
     [SerializeField] TextMeshProUGUI pointDisplay;
 
@@ -42,7 +45,111 @@ public class Manager : MonoBehaviour
 
         grid.clearCount();
 
-        for(int i=0; i < grid.grid.Count;i++) {
+        FillGridCount();
+        //grid.Count();
+
+        grid.adjacentTiles();
+
+        for (int i = 0;i < grid.grid.Count;i++) {
+            tileLibrary.pointRules(grid.grid[i],stage);
+        }
+
+        tileLibrary.Destribute(stage);
+        preShowTile.nextTile();
+        round++;
+    }
+
+
+
+    public void NextStage() {
+
+        grid.adjacentTiles();
+
+        stage++;
+
+        if (stage == 2) {
+            Debug.Log("Start Stage 2");
+
+
+            if(grid.Void == 0) {
+                points += 100;
+            }
+
+            //Mountain Related
+            for(int i = 0; i < (grid.mountains / 7);i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.OreVein);
+            }
+
+            //GrassLand Related
+            for (int i = 0;i < (grid.grasslands / 5);i++) {
+
+                int r = Random.Range(0,3);
+
+                if(r == 1) { preShowTile.nextTileTypeList.Add(Tile.Type.Meadow);}
+                else preShowTile.nextTileTypeList.Add(Tile.Type.Forest);
+            }
+
+            //Ocean Related
+            if(grid.oceans > 0) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.River);
+            }
+
+            Round();
+        } 
+        
+        else if (stage == 3) {
+            Debug.Log("Stage 3 Initiated");
+
+            preShowTile.nextTileTypeList.Add(Tile.Type.Village);
+            preShowTile.Village++;
+
+            for (int i = 0;i < (grid.forests / 5);i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.Lumber);
+                preShowTile.Lumber++;
+            }
+
+            for (int i = 0;i < (grid.oreveins / 3);i++) {
+                preShowTile.nextTileTypeList.Add(Tile.Type.Mine);
+                preShowTile.Mine++;
+            }
+
+            Round();
+        } 
+        
+        else Debug.Log("End of Game");
+
+    }
+
+
+
+    public void PointTally() {
+
+        nextTile.clearCluster();
+
+        grid.clearCount();
+
+        FillGridCount();
+
+        for (int i = 0;i < grid.grid.Count;i++) {
+            tileLibrary.pointRules(grid.grid[i],stage);
+        }
+
+        for (int i = 0;i < grid.grid.Count; i++) {
+
+            //tile.pointRules(grid.grid[i]);
+            points += grid.grid[i].point;
+            grid.grid[i].prevPoints += grid.grid[i].point;
+            grid.grid[i].point = 0;
+            //Debug.Log(points);
+        }
+
+        pointDisplay.text = points.ToString();
+    }
+
+
+
+    public void FillGridCount() {
+        for (int i = 0;i < grid.grid.Count;i++) {
             tileLibrary.updateTile(grid.grid[i],stage);
 
             switch (grid.grid[i].type) {
@@ -119,83 +226,6 @@ public class Manager : MonoBehaviour
                     break;
             }
         }
-        //grid.Count();
-
-        grid.adjacentTiles();
-
-        preShowTile.nextTile();
-        round++;
-    }
-
-
-
-    public void NextStage() {
-        stage++;
-
-        if (stage == 2) {
-            Debug.Log("Start Stage 2");
-
-
-            if(grid.Void == 0) {
-                points += 100;
-            }
-
-            //Mountain Related
-            for(int i = 0; i < (grid.mountains / 7);i++) {
-                preShowTile.nextTileTypeList.Add(Tile.Type.OreVein);
-            }
-
-            //GrassLand Related
-            for (int i = 0;i < (grid.grasslands / 5);i++) {
-
-                int r = Random.Range(0,3);
-
-                if(r == 1) { preShowTile.nextTileTypeList.Add(Tile.Type.Meadow);}
-                else preShowTile.nextTileTypeList.Add(Tile.Type.Forest);
-            }
-
-            //Ocean Related
-            if(grid.oceans > 0) {
-                preShowTile.nextTileTypeList.Add(Tile.Type.River);
-            }
-
-            Round();
-        } 
-        
-        else if (stage == 3) {
-            Debug.Log("Stage 3 Initiated");
-
-            preShowTile.nextTileTypeList.Add(Tile.Type.Village);
-
-            for (int i = 0;i < (grid.forests / 5);i++) {
-                preShowTile.nextTileTypeList.Add(Tile.Type.Lumber);
-            }
-
-            for (int i = 0;i < (grid.oreveins / 3);i++) {
-                preShowTile.nextTileTypeList.Add(Tile.Type.Mine);
-            }
-
-            Round();
-        } 
-        
-        else Debug.Log("End of Game");
-
-    }
-
-
-
-    public void PointTally() {
-
-        for(int i = 0;i < grid.grid.Count; i++) {
-
-            //tile.pointRules(grid.grid[i]);
-            points += grid.grid[i].point;
-            grid.grid[i].prevPoints += grid.grid[i].point;
-            grid.grid[i].point = 0;
-            //Debug.Log(points);
-        }
-
-        pointDisplay.text = points.ToString();
     }
 
 
@@ -210,6 +240,28 @@ public class Manager : MonoBehaviour
     public void SwitchTiles() {
         preShowTile.Switch();
     }
+
+
+
+    public void Options() {
+        if (!OptionsMenu.active) {
+            OptionsMenu.SetActive(true);
+        } else
+            OptionsMenu.SetActive(false);
+    }
+
+    public void Exit() {
+        SceneManager.LoadScene("StartMenu");
+    }
+
+    public void Restart() {
+        SceneManager.LoadScene("GameScene");
+    }
+
+    public void Back() {
+        OptionsMenu.SetActive(false);
+    }
+
 
     /*
      //------------------------------------------------------
