@@ -15,7 +15,7 @@ public class Manager : MonoBehaviour
     public HoverInfoPanel hoverInfoPanel;
     public TileLibrary tileLibrary;
 
-    public int points = 0;
+    public static int points = 0;
     int round = 0;
     public int stage = 1;
 
@@ -50,9 +50,9 @@ public class Manager : MonoBehaviour
 
         grid.adjacentTiles();
 
-        for (int i = 0;i < grid.grid.Count;i++) {
+        /*for (int i = 0;i < grid.grid.Count;i++) {
             tileLibrary.pointRules(grid.grid[i],stage);
-        }
+        }*/
 
         tileLibrary.Destribute(stage);
         preShowTile.nextTile();
@@ -71,12 +71,12 @@ public class Manager : MonoBehaviour
             Debug.Log("Start Stage 2");
 
 
-            if(grid.Void == 0) {
+            if (grid.Void == 0) {
                 points += 100;
             }
 
             //Mountain Related
-            for(int i = 0; i < (grid.mountains / 7);i++) {
+            for (int i = 0;i < (grid.mountains / 7);i++) {
                 preShowTile.nextTileTypeList.Add(Tile.Type.OreVein);
             }
 
@@ -85,19 +85,16 @@ public class Manager : MonoBehaviour
 
                 int r = Random.Range(0,3);
 
-                if(r == 1) { preShowTile.nextTileTypeList.Add(Tile.Type.Meadow);}
-                else preShowTile.nextTileTypeList.Add(Tile.Type.Forest);
+                if (r == 1) { preShowTile.nextTileTypeList.Add(Tile.Type.Meadow); } else preShowTile.nextTileTypeList.Add(Tile.Type.Forest);
             }
 
             //Ocean Related
-            if(grid.oceans > 0) {
+            if (grid.oceans > 0) {
                 preShowTile.nextTileTypeList.Add(Tile.Type.River);
             }
 
             Round();
-        } 
-        
-        else if (stage == 3) {
+        } else if (stage == 3) {
             Debug.Log("Stage 3 Initiated");
 
             preShowTile.nextTileTypeList.Add(Tile.Type.Village);
@@ -114,15 +111,16 @@ public class Manager : MonoBehaviour
             }
 
             Round();
-        } 
-        
-        else Debug.Log("End of Game");
+        } else {
+            StartCoroutine(EndOfGame());
+        }
 
     }
 
 
 
     public void PointTally() {
+        Debug.Log("calling PointTally");
 
         nextTile.clearCluster();
 
@@ -130,20 +128,15 @@ public class Manager : MonoBehaviour
 
         FillGridCount();
 
-        for (int i = 0;i < grid.grid.Count;i++) {
-            tileLibrary.pointRules(grid.grid[i],stage);
-        }
+        Debug.Log("Before Trigger");
+        StartCoroutine(grid.grid[0].Triggered());
+        Debug.Log("Finished Trigger");
 
-        for (int i = 0;i < grid.grid.Count; i++) {
+    }
 
-            //tile.pointRules(grid.grid[i]);
-            points += grid.grid[i].point;
-            grid.grid[i].prevPoints += grid.grid[i].point;
-            grid.grid[i].point = 0;
-            //Debug.Log(points);
-        }
-
-        pointDisplay.text = points.ToString();
+    public IEnumerator EndOfGame() {
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene("StartMenu");
     }
 
 
@@ -243,6 +236,50 @@ public class Manager : MonoBehaviour
 
 
 
+
+    public IEnumerator ShowTilePoints(Tile t,TMP_Text TMPtext) {
+
+        if (t.point != 0) {
+            TMPtext.text = t.point.ToString();
+            TMPtext.gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(0.5f);
+
+            Vector3 targetPosition = pointDisplay.transform.position;
+
+
+            //Debug.Log(pointDisplay.transform.position);
+            //Debug.Log(pointTrans);
+
+            float time = Time.time;
+            float animTime = time;
+
+
+            while ((TMPtext.transform.position - targetPosition).sqrMagnitude > 0.01) {
+
+                TMPtext.transform.position = Vector3.MoveTowards(TMPtext.transform.position,targetPosition,Time.deltaTime*80);
+
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+
+
+            points += t.point;
+            pointDisplay.text = points.ToString();
+
+            t.prevPoints += t.point;
+            t.point = 0;
+
+            //Debug.Log(points);
+
+            TMPtext.gameObject.SetActive(false);
+
+            TMPtext.transform.position = t.transform.position;
+        }
+    }
+
+
+
+
     public void Options() {
         if (!OptionsMenu.active) {
             OptionsMenu.SetActive(true);
@@ -251,6 +288,7 @@ public class Manager : MonoBehaviour
     }
 
     public void Exit() {
+        points = 0;
         SceneManager.LoadScene("StartMenu");
     }
 
@@ -408,7 +446,7 @@ public class Manager : MonoBehaviour
     public void hoverEnter(Tile t) {
         if (!nextTile.isDraggable && t.transform.parent.gameObject.name == "Grid") {
             float x = t.transform.position.x;
-            float y = t.transform.position.y;
+            float y = t.position.y;
             float z = t.transform.position.z;
 
             t.transform.position = new Vector3(x,y += 0.2f,z);
@@ -422,10 +460,10 @@ public class Manager : MonoBehaviour
         if (t.hover) {
             hoverInfoPanel.HoverPanel.SetActive(false);
             float x = t.transform.position.x;
-            float y = t.transform.position.y;
+            float y = t.position.y;
             float z = t.transform.position.z;
 
-            t.transform.position = new Vector3(x,y -= 0.2f,z);
+            t.transform.position = new Vector3(x,y,z);
             t.GetComponent<BoxCollider2D>().offset = new Vector2(0,0f);
             t.GetComponent<BoxCollider2D>().size = new Vector2(1,1f);
             t.hover = false;

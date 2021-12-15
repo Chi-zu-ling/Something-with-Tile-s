@@ -62,13 +62,12 @@ public class PreShowTile:MonoBehaviour {
 
     public void nextTile() {
 
-        /* Debug.Log("NextTile");
-         Debug.Log(nextTileTypeList.Count);
+        Debug.Log("NextTile");
+         /*Debug.Log(nextTileTypeList.Count);
          Debug.Log(NextTile.nextTileCluster.Count);*/
 
         if (nextTileTypeList.Count == 0 && NextTile.nextTileCluster.Count == 0 && nextTileCluster.Count == 0) {
-            manager.PointTally();
-            manager.NextStage();} 
+            manager.PointTally();} 
         
         else {
 
@@ -91,7 +90,10 @@ public class PreShowTile:MonoBehaviour {
             }
 
         }
-        tileLibrary.Description(NextTile.nextTileCluster[0]);
+
+        if (NextTile.nextTileCluster.Count > 0) {
+            tileLibrary.Description(NextTile.nextTileCluster[0]);
+        }
     }
 
 

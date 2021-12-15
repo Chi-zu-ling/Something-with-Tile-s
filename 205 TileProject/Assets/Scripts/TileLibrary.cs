@@ -44,7 +44,7 @@ public class TileLibrary:MonoBehaviour {
 
     public void updateTile(Tile t,int stage) {
 
-        Debug.Log("Updating Tile");
+        //Debug.Log("Updating Tile");
 
         int r = 0;
         adjRivers = 0;
@@ -76,7 +76,7 @@ public class TileLibrary:MonoBehaviour {
 
                         r = Random.Range(1,5);
                         if (r > 2) {
-                            Debug.Log(r + "flipped");
+                            //Debug.Log(r + "flipped");
                             t.flipped = true;
                         }
                     }
@@ -115,9 +115,9 @@ public class TileLibrary:MonoBehaviour {
 
         t.name = t.position + ", " +t.type;
         //check if AdjacentTiles should change this tile, if yes set Type
-
         SetSprites(t);
 
+        pointRules(t, stage);
     }
 
 
@@ -532,6 +532,15 @@ public class TileLibrary:MonoBehaviour {
     //Callculation of Points for this tile
     public void pointRules(Tile t,int stage) {
 
+        adjRivers = 0;
+        
+        for (int i = 0;i < t.AdjacentTiles.Count;i++) {
+            if (t.AdjacentTiles[i].type == Tile.Type.River) {
+                adjRivers++;
+            }
+        }
+
+
         #region Tier-1
         if (stage ==1) {
             switch (t.type) {
@@ -590,6 +599,10 @@ public class TileLibrary:MonoBehaviour {
                         }
                     }
 
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
+
                     break;
 
                 case Tile.Type.Forest:
@@ -603,6 +616,9 @@ public class TileLibrary:MonoBehaviour {
                             t.point +=2;
                         }
                     }
+
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));}
 
                     break;
 
@@ -622,16 +638,26 @@ public class TileLibrary:MonoBehaviour {
                     }
 
                     t.point *= S;
+
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
                     break;
 
                 case Tile.Type.MarshLand:
                     t.point = 10;
 
                     for (int i = 0;i < t.AdjacentTiles.Count;i++) {
-                        t.point +=  t.AdjacentTiles[i].point;
+                        if (t.AdjacentTiles[i].type != Tile.Type.MarshLand) {
+                            t.point +=  t.AdjacentTiles[i].point;
+                        }
                     }
 
                     t.point = ((t.point * -1)/2);
+
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
 
                     break;
 
@@ -662,7 +688,11 @@ public class TileLibrary:MonoBehaviour {
                     if (grid.villages > 0) {
                         t.point = (t.point / grid.villages);}
 
-                break;
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
+
+                    break;
                 #endregion
 
     #region Lumber
@@ -676,6 +706,10 @@ public class TileLibrary:MonoBehaviour {
                         } else if (t.AdjacentTiles[i].type == Tile.Type.River) {
                             t.point += 8;
                         }
+                    }
+
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
                     }
                     break;
                 #endregion
@@ -698,6 +732,10 @@ public class TileLibrary:MonoBehaviour {
                     }
 
                     t.point = (int)(t.point * 1.5);
+
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
                     break;
                 #endregion
 
@@ -716,6 +754,10 @@ public class TileLibrary:MonoBehaviour {
                         }
                     }
 
+
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
                     break;
                 #endregion
 
@@ -732,6 +774,10 @@ public class TileLibrary:MonoBehaviour {
                         }
                     }
 
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
+
                     break;
                 #endregion
 
@@ -745,6 +791,9 @@ public class TileLibrary:MonoBehaviour {
                         }
                     }
 
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
                     break;
                 #endregion
 
@@ -762,6 +811,9 @@ public class TileLibrary:MonoBehaviour {
                         }
                     }
 
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
                     break;
                 #endregion
 
@@ -777,7 +829,11 @@ public class TileLibrary:MonoBehaviour {
                     if (grid.traders>0) {
                         t.point *= grid.traders;}
 
-                break;
+                    if (adjRivers > 0) {
+                        t.point = (t.point * (adjRivers*2));
+                    }
+
+                    break;
                 #endregion
 
             }
@@ -785,11 +841,7 @@ public class TileLibrary:MonoBehaviour {
         #endregion
 
 
-        if (adjRivers > 0) {
-        t.point = (t.point * (adjRivers*2)); 
-        }
-
-        if(t.tier == 3) {
+            if (t.tier == 3) {
             for(int i = 0; i < t.AdjacentTiles.Count;i++) {
                 if(t.AdjacentTiles[i].type == Tile.Type.Village) {
                     t.point *= 3 ;
@@ -797,7 +849,6 @@ public class TileLibrary:MonoBehaviour {
                 }
             }
         }
-
 
     }
 

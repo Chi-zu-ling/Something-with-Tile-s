@@ -67,14 +67,6 @@ public class Grid:MonoBehaviour {
         traders = 0;
     }
 
-    /*public void Count(){
-        Debug.Log("Void: " + Void);
-        Debug.Log("Mountains: " + mountains);
-        Debug.Log("Oceans: " + oceans);
-        Debug.Log("Grassland: " + grasslands);
-
-    }*/
-
 
     //... spawns grid, only call once at start of game
     public void spawnGrid() {
@@ -125,6 +117,7 @@ public class Grid:MonoBehaviour {
                 }
             }
         }
+
     }
 
 

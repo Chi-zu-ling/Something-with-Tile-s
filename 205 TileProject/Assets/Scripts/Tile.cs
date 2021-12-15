@@ -5,12 +5,13 @@ using System.Linq;
 using TMPro;
 using UnityEngine.UI;
 
+
 public class Tile:MonoBehaviour {
     Grid grid;
     NextTile nextTile;
     Manager manager;
 
-
+    [SerializeField] private TMP_Text tilePointsText;
 
     public int pixelWidth = 1;
     public int pixelHeight = 1;
@@ -26,6 +27,8 @@ public class Tile:MonoBehaviour {
     public int variation;
 
     public bool flipped = false;
+
+    public bool triggered = false;
 
     public Vector2Int position;
     public List<Tile> AdjacentTiles;
@@ -67,6 +70,45 @@ public class Tile:MonoBehaviour {
 
         float width = pixelWidth;
         float height = pixelHeight;
+    }
+
+    public IEnumerator Triggered() {
+        if (triggered == false) {
+
+            triggered = true;
+
+            float x = this.transform.position.x;
+            float y = this.position.y;
+            float z = this.transform.position.z;
+
+            if(this.type != Tile.Type.Void){
+                this.transform.position = new Vector3(x,y += 0.15f,z);}
+
+
+            yield return new WaitForSeconds(0.1f);
+
+
+            StartCoroutine(manager.ShowTilePoints(this, this.tilePointsText));
+           
+
+            for (int i = 0;i < this.AdjacentTiles.Count;i++) {
+                StartCoroutine(this.AdjacentTiles[i].Triggered());}
+
+
+            yield return new WaitForSeconds(0.3f);
+
+            triggered = false;
+
+            if (this.type != Tile.Type.Void) {
+                this.transform.position = new Vector3(x,y -= 0.15f,z);}
+
+
+            if(this == grid.grid[grid.grid.Count-1]) {
+                yield return new WaitForSeconds(0.1f);
+                //manager.pointDisplay.text = points.ToString();
+                manager.NextStage();
+            }
+        }
     }
 
     #region MouseFunctions
