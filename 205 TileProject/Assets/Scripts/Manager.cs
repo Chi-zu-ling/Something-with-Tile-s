@@ -12,7 +12,7 @@ public class Manager : MonoBehaviour
     public NextTile nextTile;
     public PreShowTile preShowTile;
     public Tile tile;
-    public HoverInfoPanel hoverInfoPanel;
+
     public TileLibrary tileLibrary;
 
     public static int points = 0;
@@ -319,9 +319,13 @@ public class Manager : MonoBehaviour
             } else hoverTargetParent = null;
         }
 
-        if (!nextTile.isDraggable && t.transform.parent.gameObject.name == "Grid") {
-          hoverInfoPanel.showInfoTile(t);
+        if (!nextTile.isDraggable && t.transform.parent.gameObject.name == "Grid")
+        {
+            tileLibrary.miniDisplay.sprite = t.GetComponent<SpriteRenderer>().sprite;
+            tileLibrary.name.text = ($"{t.type}");
+            tileLibrary.display.text = ($"\nTiles points: \t \t {t.point}  \nPrevious points: \t {t.prevPoints}");
         }
+
     }
 
     public void MouseTarget() {
@@ -402,7 +406,7 @@ public class Manager : MonoBehaviour
                             Debug.Log("one of the Tiles does not exist, Abort");
                             break;}
 
-                        canPlace = tileLibrary.placementRules(nullcheckTile,nextTile.nextTileCluster[i]);
+                        canPlace = tileLibrary.placementRules(nullcheckTile,nextTile.nextTileCluster[i], true);
 
                         if (!canPlace) {
                             Debug.Log("Cannot place Tile according to TilePlacement Rules");
@@ -458,7 +462,8 @@ public class Manager : MonoBehaviour
 
     public void hoverExit(Tile t) {
         if (t.hover) {
-            hoverInfoPanel.HoverPanel.SetActive(false);
+
+
             float x = t.transform.position.x;
             float y = t.position.y;
             float z = t.transform.position.z;
@@ -467,6 +472,8 @@ public class Manager : MonoBehaviour
             t.GetComponent<BoxCollider2D>().offset = new Vector2(0,0f);
             t.GetComponent<BoxCollider2D>().size = new Vector2(1,1f);
             t.hover = false;
+
+            tileLibrary.Description(nextTile.nextTileCluster[0]);
         }
     }
     #endregion

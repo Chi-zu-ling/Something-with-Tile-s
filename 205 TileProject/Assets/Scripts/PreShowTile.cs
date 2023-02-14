@@ -261,6 +261,7 @@ public class PreShowTile:MonoBehaviour {
         }
 
         overSizeCheck();
+        NextTile.hightlightPlacementPossibility();
 
         tileLibrary.Description(NextTile.nextTileCluster[0]);
 
@@ -290,6 +291,8 @@ public class PreShowTile:MonoBehaviour {
         NextTile.height = height;
 
         nextTileCluster.Clear();
+
+        NextTile.hightlightPlacementPossibility();
     }
 
 

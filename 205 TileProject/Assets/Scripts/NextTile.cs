@@ -73,4 +73,19 @@ public class NextTile : MonoBehaviour
         }
     }
 
+    public void hightlightPlacementPossibility()
+    {
+
+        foreach (Tile tile in manager.grid.grid)
+        {
+
+            tile.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+
+            if (!manager.tileLibrary.placementRules(tile, nextTileCluster[0], false))
+            {
+                tile.GetComponent<SpriteRenderer>().color = new Color32(85, 85, 115, 255);
+
+            }
+        }
+    }
 }

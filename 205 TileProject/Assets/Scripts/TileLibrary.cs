@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class TileLibrary:MonoBehaviour {
@@ -33,11 +34,12 @@ public class TileLibrary:MonoBehaviour {
     [SerializeField] Sprite Trader;
 
 
-    [SerializeField] TextMeshProUGUI name;
-    [SerializeField] TextMeshProUGUI details;
-    [SerializeField] TextMeshProUGUI pointDisplay;
+    [SerializeField] public Image miniDisplay;
+    [SerializeField] public TextMeshProUGUI name;
+    [SerializeField] public TextMeshProUGUI display;
 
     int adjRivers;
+    bool addRiver = true;
 
     bool mineVillage = false;
     bool lumberVillage = false;
@@ -239,6 +241,13 @@ public class TileLibrary:MonoBehaviour {
 
 
     public void Destribute(int stage){
+
+        if (stage == 2 && !preShowTile.nextTileTypeList.Contains(Tile.Type.River) && addRiver) {
+            if ( grid.rivers == 0) { preShowTile.nextTileTypeList.Add(Tile.Type.River); addRiver = false;}
+
+            if (grid.rivers > 0) { preShowTile.nextTileTypeList.Add(Tile.Type.River); addRiver = false;}
+        }
+
         if (stage == 3) {
             for (int i = 0;preShowTile.Village <= (grid.lumbers + grid.mines)/2;i++) {
                 preShowTile.nextTileTypeList.Add(Tile.Type.Village);
@@ -267,7 +276,7 @@ public class TileLibrary:MonoBehaviour {
      
 
 
-    public bool placementRules(Tile targetTile,Tile nextTile) {
+    public bool placementRules(Tile targetTile,Tile nextTile, bool isCursor) {
         //only gets called by manager.targetDrop()
         //get placementRules for nextTile (the Tile You are Holding), and check if TargetTile fullfills requirements, if yes; return true; 
 
@@ -314,14 +323,13 @@ public class TileLibrary:MonoBehaviour {
 
                 if ((targetTile.type != Tile.Type.Ocean) && (targetTile.type != Tile.Type.Void)) {
 
-                    Debug.Log(grid.rivers);
+                    //Debug.Log(grid.rivers);
 
                     //first RiverTile
                     if (grid.rivers == 0) {
 
                         for (int i = 0;i < targetTile.AdjacentTiles.Count;i++) {
                             if (targetTile.AdjacentTiles[i].type == Tile.Type.Ocean) {
-                                preShowTile.nextTileTypeList.Add(Tile.Type.River);
                                 return true;
                             }
                         }
@@ -337,23 +345,22 @@ public class TileLibrary:MonoBehaviour {
                         && targetTile.type != Tile.Type.Mountain &&
                         targetTile.type != Tile.Type.OreVein) {
 
-                        Debug.Log("not first or last Tile: " + targetTile);
+                        //Debug.Log("not first or last Tile: " + targetTile);
                         for (int i = 0;i < targetTile.AdjacentTiles.Count;i++) {
 
-                            if (targetTile.AdjacentTiles[i].type == Tile.Type.River) {
-                                preShowTile.nextTileTypeList.Add(Tile.Type.River);
+                                if (targetTile.AdjacentTiles[i].type == Tile.Type.River){
+                                    if (isCursor) {addRiver = true;}
                                 return true;
                             }
                         }
                     }
 
                     //final RiverTile
-                    else {
+                    if (targetTile.type == Tile.Type.Mountain ||
+                        targetTile.type == Tile.Type.OreVein){
 
-                        Debug.Log("Final tile: " +  targetTile);
-                        for (int i = 0;i < targetTile.AdjacentTiles.Count;i++) {
-                            if (targetTile.AdjacentTiles[i].type == Tile.Type.River) {
-                                targetTile.point += 50;
+                        for (int i = 0; i < targetTile.AdjacentTiles.Count; i++){
+                            if (targetTile.AdjacentTiles[i].type == Tile.Type.River){
                                 return true;
                             }
                         }
@@ -373,7 +380,7 @@ public class TileLibrary:MonoBehaviour {
                     targetTile.type == Tile.Type.Void ||
                     targetTile.tier == 3)) {
 
-                    if (grid.villages == 0) {
+                    if (grid.villages == 0 && isCursor) {
                         preShowTile.nextTileTypeList.Add(Tile.Type.Lumber);
                             preShowTile.Lumber++;
                         preShowTile.nextTileTypeList.Add(Tile.Type.Mine);
@@ -856,28 +863,26 @@ public class TileLibrary:MonoBehaviour {
 
     public void Description(Tile t) {
         name.text = t.type.ToString();
+        miniDisplay.sprite = t.GetComponent<SpriteRenderer>().sprite;
 
         switch (t.type) {
 
 
             #region Tier-1
             case Tile.Type.Void:
-                details.text = " ... ";
                 break;
 
             case Tile.Type.Ocean:
-                details.text = "A big Area of Water, can be placed on Void and any Tier 1 Tile";
-                pointDisplay.text ="Grants 0 Points. + 1 for each adjacent Ocean, +3 for each adjacent Beach";
+                
+                display.text = "Grants 0 Points. \n+ 1 for each adjacent Ocean, \n+3 for each adjacent Beach. \nMay overlap with other Creation Tiles";
                 break;
 
             case Tile.Type.Grassland:
-                details.text = "Greenery waiting to develop, can be placed on Void and any Tier 1 Tile";
-                pointDisplay.text ="Grants 1 Point. no Modifiers";
+                display.text ="Grants 1 Point. \nMay overlap with other Creation Tiles";
                 break;
 
             case Tile.Type.Mountain:
-                details.text = "Rockformations potentially holding valuable minerals, can be placed on Void and any Tier 1 Tile";
-                pointDisplay.text ="Grants 0 points. +1 for each adjacent Mountain";
+                display.text = "Grants 0 points. \n+1 for each adjacent Mountain. \nMay overlap with other Creation Tiles";
                 break;
             #endregion
 
@@ -886,26 +891,19 @@ public class TileLibrary:MonoBehaviour {
 
             #region Tier-2
             case Tile.Type.Meadow:
-                details.text = "A patch of rich soil and diverse plantlife, can only be placed on Grassland";
-                pointDisplay.text = " +1 for each adjacent Grassland, +2 for each adjacent Meadow. * adjacent Grasslands + Meadows ";
+                display.text = " +1 for each adjacent Grassland, \n+2 for each adjacent Meadow. \n* adjacent Grasslands + Meadows ";
                 break;
 
             case Tile.Type.Forest:
-                details.text = "Underwoods animals love to hide in, can only be placed on Grassland";
-                pointDisplay.text ="Grants 2 points. +3 for each adjacent Mountain or Orevein, +2 for each adjacent Forest";
+                display.text ="Grants 2 points. \n+3 for each adjacent Mountain or Orevein, \n+2 for each adjacent Forest";
                 break;
 
             case Tile.Type.OreVein:
-                details.text = "A surfaced vein of rich minerals and metals, can only be placed on Mountains";
-                pointDisplay.text ="Grants 3 points. 5* original points of Tile placed on, -4 for each adjacent Orevein";
+                display.text ="Grants 3 points. \n5* original points of Tile placed on, \n-4 for each adjacent Orevein";
                 break;
 
             case Tile.Type.River:
-                if (grid.rivers > 0) {
-                    details.text = "Nourishing streams of water, can be placed on anything except Void and Oceans. Will continue to grant River Tiles until it ends on a Mountain, Orevein, Deleted or adjacent to another Ocean.";
-                }else
-                    details.text = "Nourishing streams of water, can be placed on anything except Void and Oceans. Must first be placed adjacent to an Ocean. Afterwards adjacent to other Rivers.";
-                pointDisplay.text = "Grants a *2 Multiplier to adjacent tiles (stacks), grants a bonus if it ends on a Mountain or Orevein (+50). Dont become too greedy";
+                display.text = "Grants a *2 Multiplier to adjacent tiles (stacks)";
                 break;
             #endregion
 
@@ -914,43 +912,35 @@ public class TileLibrary:MonoBehaviour {
 
             #region Tier-3
             case Tile.Type.Village:
-                details.text = "A small Village busteling with hungry Workforce to boost nearby Tier 3 Tiles, can be placed on any Tile except water and other Tier 3 Tiles";
-                pointDisplay.text = "Grants other Tier 3 Tiles a *3 multiplier. Gains +7,+12,+15 points for Fisher,Hunter,Farmer / by number of Villages on the map  ";
+                display.text = "Grants other Population Tiles a *3 multiplier. \nGains +7,+12,+15 points for Fisher,Hunter,Farmer / by number of Villages on the map  ";
                 break;
 
             case Tile.Type.Lumber:
-                details.text = "Tile that produces wood for more Villages, can only be placed adjacent to two other Forests and cannot be placed on Water";
-                pointDisplay.text = "Gains adjacent Forest Tile points and +8 for each River Tile";
+                display.text = "Gains adjacent Forest Tile points and +8 for each River Tile";
                 break;
 
             case Tile.Type.Hunter:
-                details.text = "Tile that gathers food from the wild, cannot be placed adjacent to another Tier 3 Tile.";
-                pointDisplay.text = "+3,+4,+7,+8 for each adjacent Mountain, Grassland, Meadow and Forest Tile";
+                display.text = "+3,+4,+7,+8 for each adjacent Mountain, Grassland, Meadow and Forest Tile";
                 break;
 
             case Tile.Type.Farm:
-                details.text = "A Farm which utilises the surrounding Tiles as farmland for animals and crops, can only be placed on Grassland and Meadow Tiles";
-                pointDisplay.text = "Tile grants 8 base points. Gains adjacent Meadow Tile points and +4,+8 for each adjacent Grassland or River Tile";
+                display.text = "Tile grants 8 base points. \nGains adjacent Meadow Tile points \n+4,+8 for each adjacent Grassland or River Tile";
                 break;
 
             case Tile.Type.Mine:
-                details.text = "A Mine to gather Ore and Minerals from nearby OreVeins and Mountains, can only be placed on a Mountain or Orevein Tile";
-                pointDisplay.text = "Gains adjacent Orevein points. +3 for each adjacent Mountain, ";
+                display.text = "Gains adjacent Orevein points. \n+3 for each adjacent Mountain, ";
                 break;
 
             case Tile.Type.Forge:
-                details.text = "Melts the Ore from adjacent Mines and transforms it into usefull Items, can only be placed adjacent to a Mountain and not on Water";
-                pointDisplay.text = "Grants 25 base Points and gains half the poits of any adjacent Mine";
+                display.text = "Grants 25 base Points. \n+half the points of any adjacent Mine";
                 break;
 
             case Tile.Type.Fisher:
-                details.text = "Tile which gathers Food from the Rivers and Oceans, must be placed adjacent to River or Ocean Tiles and not on Mountain or Tier 3 Tiles";
-                pointDisplay.text = "Grants 10 base Points. +5,+6,+7 for each adjacent Beach, River and Ocean Tile";
+                display.text = "Grants 10 base Points. \n+5,+6,+7 for each adjacent Beach, River and Ocean Tile";
                 break;
 
             case Tile.Type.Trader:
-                details.text = "Trades Produce for Profits, can only be placed on Ocean or River Tiles";
-                pointDisplay.text = "Grants 5 base Points. +2,+3,+4,+7 for each Food Source, Lumber, Mine, Forge. * Traders on the Map";
+                display.text = "Grants 5 base Points. \n+2,+3,+4,+7 for each Food Source, Lumber, Mine, Forge. * Traders on the Map";
                 break;
                 #endregion
         }
